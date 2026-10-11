@@ -1,3 +1,5 @@
+教師更正（2026-10-11）：115-MI與115-2-AP2題庫完全分開。AP2題庫已位元還原e8805f8（227題／說明1–34列），22題另存repo外115-MI專用檔。以下原249題敘述為已取消的歷史紀錄，以最新formal-delivery.md及bank-separation-verification.json為準；網站不需更新，本次不push、不部署。
+
 # 1.7.1 看板＋微免整合交件（2026-10-11）
 
 教師已授權整合，完成後停在本機乾淨的 `codex/release-1.7.1-micro-immuno`；本次不 push、不執行 deploy.sh。工作目錄 `.worktrees/release-1.7.1-micro-immuno`，版本 1.7.1。

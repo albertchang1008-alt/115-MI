@@ -1,3 +1,5 @@
+教師更正（2026-10-11）：115-MI與115-2-AP2題庫完全分開。AP2題庫已位元還原e8805f8（227題／說明1–34列），22題另存repo外115-MI專用檔。以下原249題敘述為已取消的歷史紀錄，以最新formal-delivery.md及bank-separation-verification.json為準；網站不需更新，本次不push、不部署。
+
 整合更新（2026-10-11）：教師已核可正式交件並授權整合；1.7.1 release已完成、check140／29全過，待教師自行部署，未push／未執行deploy.sh。詳見 RELEASE_1.7.1_MICRO_IMMUNO_REPORT.md。下列1.7.0正式交件及部署建議保留為歷史紀錄。
 
 # 115-MI 微免教材正式交件報告

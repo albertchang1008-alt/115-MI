@@ -1,5 +1,11 @@
 # 開發紀錄
 
+## 115-MI／115-2-AP2題庫完全分離（2026-10-11，Codex，版本不變）
+
+- 依教師更正（Claude先前將不同課程題庫合併為錯誤），自release HEAD a593796開fix/separate-115-MI-bank；AP2題庫原位還原e8805f8，位元／SHA256完全相同：227題，說明1–34列，沒有MI題目。
+- MI專用22題另存 /Users/HHC/Documents/070326筆記/教學知識庫/04_outputs/platform_115-MI/115-MI_微免資訊圖表題庫.xlsx（repo外），課程代碼全115-MI；細菌單元「第一小時：細菌」第2–12列、免疫「第二小時：免疫」第13–23列，次單元維持原教材標題，選項、答案代碼、Zuvio與所有其餘題目欄沿核可版本；說明列兩份網址。Artifact Tool建置後重新匯入逐格／XML比對與渲染檢視通過。
+- handoff固定決策25及決策22已更正，formal-delivery／兩份報告註明此前249題錯誤已被本次分離取代。完整check前端140、Functions29全過，0fail／skipped，兩端build／版本1.7.1通過；主程式與正式教材HTML不改，不push、不部署，下次正式部署時一併帶上。
+
 ## 1.7.1 看板＋微免release整合完成（2026-10-11，Codex）
 
 - 由ed08854建立指定release worktree與codex/release-1.7.1-micro-immuno，依序合併微免 465c375c40f9170559e01db6e3f2dee485ad82b7 與最新main 3f6d92574c0c29b64a3cad2a352e9ce4add4b962。handoff衝突已整合；版本維持1.7.1、看板檔及名冊後端與錯誤詳情UI逐項比對通過。

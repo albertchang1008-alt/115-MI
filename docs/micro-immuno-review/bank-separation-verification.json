@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-11",
+  "branch": "fix/separate-115-MI-bank",
+  "base": "a593796",
+  "ap2": {
+    "path": "html/資訊圖表題庫_上傳用.xlsx",
+    "matchesE8805f8ByteForByte": true,
+    "sha256": "48dca2aa0cbc98c858591aa7489c80baf018fa359fd4ef1d56faa401578fee2e",
+    "questionCount": 227,
+    "questionRows": [
+      1,
+      228
+    ],
+    "notesRows": [
+      1,
+      34
+    ],
+    "miQuestions": 0
+  },
+  "mi": {
+    "path": "/Users/HHC/Documents/070326筆記/教學知識庫/04_outputs/platform_115-MI/115-MI_微免資訊圖表題庫.xlsx",
+    "sha256": "4946741b7271ea7a33a8562fb298e8a00bad6e118bad820a167004b0881f25f0",
+    "questionCount": 22,
+    "sheetRowsIncludingHeader": 23,
+    "courseCodes": [
+      "115-MI"
+    ],
+    "bacteriaUnit": "第一小時：細菌",
+    "bacteriaRows": [
+      2,
+      12
+    ],
+    "immunoUnit": "第二小時：免疫",
+    "immunoRows": [
+      13,
+      23
+    ],
+    "headerMatchesTemplate": true,
+    "other22ColumnsMatchVerifiedSource": true,
+    "optionOrderAnswerCodesAndExplanationsUnchanged": true,
+    "notesIncludesBothMaterialUrls": true,
+    "notInsideRepository": true,
+    "savedFileReimportAndRawXmlVerified": true,
+    "visualReview": true
+  },
+  "fullCheck": {
+    "exitCode": 0,
+    "frontendTests": 140,
+    "functionsTests": 29,
+    "failed": 0,
+    "skipped": 0,
+    "frontendBuild": true,
+    "functionsBuild": true,
+    "version": "1.7.1"
+  },
+  "websiteSourcesAndMaterialHtmlUnchanged": true,
+  "push": false,
+  "deploy": false
+}

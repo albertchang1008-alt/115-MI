@@ -12,7 +12,7 @@
 - 兩份微免與三份CHP沿用核可內容；僅替換兩份SDK網址為MI站。AP2公開教材移除，catalog僅兩筆MI；SDK及教材判定不改。README保留作materials:sync目錄資料。
 - npm ci、functions ci、materials:sync、完整check成功：前端132／Functions29，0fail／skipped，版本1.7.1與兩端build通過。AP2公開檔測試調整逐條列於部署文件。
 - SHEETS_SYNC_KEY新版本2已設定且sheetsPublish使用；40個函式全部ACTIVE（asia-east1），Firestore規則與索引部署成功。服務帳戶：62416037569-compute@developer.gserviceaccount.com。
-- 後端成功後才推mi/main；前端發布與正式網址檢查結果見 docs/DEPLOY_115-MI_REPORT.md。
+- 本機網站提交a2d2a24完成；後端成功後推mi/main被GitHub拒絕（本機PAT缺workflow scope；SSH無金鑰）。遠端仍a3430e4，前端未發布。等待教師更新本機GitHub憑證再重試；見docs/DEPLOY_115-MI_REPORT.md。
 - .env.local忽略不提交；.firebaserc default、pages.yml、SDK、AP2 deploy.sh未改；AP2題庫與e8805f8逐位元相同227題；115-MI題庫在repo外獨立檔。原目錄與其他worktree未改。
 
 ## 固定決策（精簡版；細節見各 docs）
@@ -56,7 +56,8 @@
 
 26. **115-MI 獨立部署**：網站 `albertchang1008-alt/115-MI`、Firebase `mi-bd885`；115-2-AP2 維持 `115-1-AP2`／`ap2-7ed91`。兩邊共用程式碼，但部署、資料、教材、題庫各自分開；部署前必確認目標專案與 remote。
 
-## 下一步（停在教師登入）
-- 教師在115-MI新站以Google登入一次，提供UID；教師自行完成gcloud ADC登入後，再設定mi-bd885教師claim。尚未代登入／設定claim／匯入題庫名冊。
+## 下一步
+- 先等教師更新本機GitHub憑證workflow權限；再一般push mi、等Actions綠勾並驗證六網址。
+- 新網站發布完成後，停在教師以Google登入一次提供UID；教師自行完成gcloud ADC登入後，再設定mi-bd885教師claim。尚未代登入／設定claim／匯入題庫名冊。
 - 教師將115-MI Google Sheet分享給上方服務帳戶，再於MI後台匯入該課自己的題庫與名冊。
 - Apps Script若使用SHEETS_SYNC_KEY，採相同Secret Manager版本；值不得寫入聊天或repo。

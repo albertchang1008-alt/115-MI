@@ -25,7 +25,9 @@ archiveCourse, bootstrap, buildReviewExam, createSnapshot, dailyReports, deleteC
 
 ## 前端發布
 
-後端全部成功後才推送mi/main，使用原課序pages.yml。Actions與六個正式網址結果於部署後補記。
+後端全部成功後執行一般 `git push mi deploy/115-MI-site:main`，GitHub拒絕：本機Personal Access Token缺少workflow scope，無法新增pages.yml。SSH agent無金鑰，SSH登入也未通過。此為GitHub憑證權限問題；沒有force-push，沒有發布前端。
+
+本機網站合併提交 `a2d2a2493d0262ba1ff2c46b16f2c17668746c02` 已完成。mi/main仍為原提交a3430e4d7180643942cb6db19cf63c4e0ea22dba；該網站合併提交的Actions runs為0。等待教師更新本機GitHub憑證workflow權限後重試，才能確認新登入頁與六個正式網址。未以舊站200宣稱新版本已發布。
 
 ## 停止點
 

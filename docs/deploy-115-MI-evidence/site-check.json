@@ -1,0 +1,37 @@
+{
+  "urls": [
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/",
+      "status": 200
+    },
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/materials/micro-bacteria-review-v1/index.html",
+      "status": 200
+    },
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/materials/immuno-concepts-review-v1/index.html",
+      "status": 200
+    },
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/CHP07_immune_infographic.html",
+      "status": 200
+    },
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/CHP08_hypersensitivity_infographic.html",
+      "status": 200
+    },
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/CHP16_mycology_infographic.html",
+      "status": 200
+    }
+  ],
+  "sdkURL": "https://albertchang1008-alt.github.io/115-MI/materials/course-learning.js",
+  "publishedProjectConfig": true,
+  "ui": {
+    "loginVisible": true,
+    "loginEnabled": true,
+    "projectConfig": "mi-bd885",
+    "version": true,
+    "pageErrors": []
+  }
+}

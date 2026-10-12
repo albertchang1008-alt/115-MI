@@ -1,0 +1,19 @@
+{
+  ".firebaserc": true,
+  ".github/workflows/pages.yml": true,
+  "scripts/deploy.sh": true,
+  "public/materials/course-learning.js": true,
+  "CHP07_immune_infographic.html": true,
+  "CHP08_hypersensitivity_infographic.html": true,
+  "CHP16_mycology_infographic.html": true,
+  "micro-bacteria-review-v1": true,
+  "immuno-concepts-review-v1": true,
+  "AP2-bank-byte-identical": true,
+  "env-ignored": true,
+  "dist-materials": [
+    "README.md",
+    "course-learning.js",
+    "immuno-concepts-review-v1",
+    "micro-bacteria-review-v1"
+  ]
+}

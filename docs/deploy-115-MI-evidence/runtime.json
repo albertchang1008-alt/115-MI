@@ -1,0 +1,209 @@
+[
+  {
+    "name": "publishQuestions",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "saveActivity",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "getLearningDiagnostics",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "buildReviewExam",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "getSnapshots",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "getBank",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "saveLearningEvents",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "migrateRoster",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "questionStudents",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "getSyncStatus",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "setUnitVisibility",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "dailyReports",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "submitAttempt",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "syncSheet",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "getPublished",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "getProgress",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "setSchedule",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "saveExplanationResearchEvents",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "endCurrentExam",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "getExplanationResearchEvidence",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "updateReports",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "getReports",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "getHistory",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "importRoster",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "renameArchiveLabel",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "archiveCourse",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "syncRoster",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "saveSheetConfig",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "sheetsPublish",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com",
+    "secrets": [
+      {
+        "key": "SHEETS_SYNC_KEY",
+        "project": "mi-bd885",
+        "version": "2"
+      }
+    ]
+  },
+  {
+    "name": "deleteReviewExam",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "bootstrap",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "saveCourse",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "deleteCourse",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "getRoster",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "setStudentNotice",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "publishCourse",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "getCompletion",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "submitMixedAttempts",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "mergeChapter",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  },
+  {
+    "name": "createSnapshot",
+    "state": "ACTIVE",
+    "serviceAccount": "62416037569-compute@developer.gserviceaccount.com"
+  }
+]

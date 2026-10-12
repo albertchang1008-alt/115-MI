@@ -4,7 +4,7 @@
 
 - 教師授權今天部署mi-bd885與albertchang1008-alt/115-MI；新worktree deploy/115-MI-site合入a593796、題庫分離54a1d3c及mi/main歷史。版本1.7.1。
 - AP2公開教材移除；保留兩份微免與三份CHP，HTML僅SDK站別替換；catalog網址改MI、README保留供sync。測試調整逐條記於docs/DEPLOY_115-MI.md，不改教材判定。
-- 前端132／Functions29與兩端build、版本check全過；40個asia-east1函式＋Firestore規則索引部署成功，新SHEETS_SYNC_KEY版本2生效。後端成功才推mi/main，前端推送被GitHub拒絕（PAT缺workflow權限、SSH無金鑰），等待教師更新本機憑證，再重試發布與網址檢查；之後停等教師登入UID。AP2專案／repo未push部署，default未改。
+- 前端132／Functions29與兩端build、版本check全過；40個asia-east1函式＋Firestore規則索引部署成功，新SHEETS_SYNC_KEY版本2生效。後端成功才推mi/main，首次前端推送被GitHub拒絕（PAT缺workflow權限），教師更新後一般push mi/main成功；Actions 38197681330 build/deploy全過，六網址200，登入畫面正常、正式JS設定mi-bd885。部署報告與handoff已更新，停等教師登入UID。AP2專案／repo未push部署，default未改。
 
 ## 115-MI／115-2-AP2題庫完全分離（2026-10-11，Codex，版本不變）
 

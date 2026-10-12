@@ -23,11 +23,24 @@ archiveCourse, bootstrap, buildReviewExam, createSnapshot, dailyReports, deleteC
 - npm ci與functions ci成功；materials:sync成功；npm run check成功：前端132/132、Functions29/29，0失敗／跳過，版本及兩端build成功。
 - 移除AP2公開HTML的8個快照測試；新增MI核可內容、36個ID、SDK、catalog與白名單驗證；兩個fixtures改為MI目錄。完整逐條清單與理由見 [部署文件](DEPLOY_115-MI.md#測試調整)，沒有修改應用判定邏輯。
 
-## 前端發布
+## 前端發布（已完成）
 
-後端全部成功後執行一般 `git push mi deploy/115-MI-site:main`，GitHub拒絕：本機Personal Access Token缺少workflow scope，無法新增pages.yml。SSH agent無金鑰，SSH登入也未通過。此為GitHub憑證權限問題；沒有force-push，沒有發布前端。
+首次推送因本機PAT缺workflow scope被GitHub拒絕；教師於2026-10-12更新既有token權限後，一般push成功，沒有force。網站合併提交a2d2a2493d0262ba1ff2c46b16f2c17668746c02，首次發布d26763e3d9847ea80de847a8153152ed8f899190。保留既有mi/main歷史。
 
-本機網站合併提交 `a2d2a2493d0262ba1ff2c46b16f2c17668746c02` 已完成。mi/main仍為原提交a3430e4d7180643942cb6db19cf63c4e0ea22dba；該網站合併提交的Actions runs為0。等待教師更新本機GitHub憑證workflow權限後重試，才能確認新登入頁與六個正式網址。未以舊站200宣稱新版本已發布。
+[Actions 38197681330](https://github.com/albertchang1008-alt/115-MI/actions/runs/38197681330) build與deploy全部success，包括GitHub上的npm ci、functions ci、完整npm run check。前端發布後才驗證下表：
+
+| 網址 | HTTP |
+|---|---|
+| [https://albertchang1008-alt.github.io/115-MI/](https://albertchang1008-alt.github.io/115-MI/) | 200 |
+| [https://albertchang1008-alt.github.io/115-MI/materials/micro-bacteria-review-v1/index.html](https://albertchang1008-alt.github.io/115-MI/materials/micro-bacteria-review-v1/index.html) | 200 |
+| [https://albertchang1008-alt.github.io/115-MI/materials/immuno-concepts-review-v1/index.html](https://albertchang1008-alt.github.io/115-MI/materials/immuno-concepts-review-v1/index.html) | 200 |
+| [https://albertchang1008-alt.github.io/115-MI/CHP07_immune_infographic.html](https://albertchang1008-alt.github.io/115-MI/CHP07_immune_infographic.html) | 200 |
+| [https://albertchang1008-alt.github.io/115-MI/CHP08_hypersensitivity_infographic.html](https://albertchang1008-alt.github.io/115-MI/CHP08_hypersensitivity_infographic.html) | 200 |
+| [https://albertchang1008-alt.github.io/115-MI/CHP16_mycology_infographic.html](https://albertchang1008-alt.github.io/115-MI/CHP16_mycology_infographic.html) | 200 |
+
+Headless Chrome確認登入頁顯示v1.7.1、「使用Google帳號登入」按鈕可用、未出現未設定Firebase提示、0 pageerror。正式載入的JS中VITE_FIREBASE_PROJECT_ID=mi-bd885與authDomain=mi-bd885.firebaseapp.com；登入前畫面本身沒有專案名稱欄，專案名稱顯示位於登入後「平台設定」，尚待教師登入核看。兩份教材皆使用MI站SDK。
+
+網址與執行階段證據見deploy-115-MI-evidence/*.json；登入截圖只存本機/tmp，不納入版控。本次最後的紀錄提交只更新文件及驗證證據，不改應用程式；仍由pages.yml執行check與發布。
 
 ## 停止點
 

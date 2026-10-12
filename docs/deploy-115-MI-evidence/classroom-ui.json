@@ -1,0 +1,108 @@
+{
+  "testedAt": "2026-10-12T16:49:22.368Z",
+  "localOnly": true,
+  "checks": [
+    {
+      "id": "c1-predict",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "id": "c1-toxin",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "id": "c1-spread",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "id": "c1-sterile",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "id": "c1-drug",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "id": "c1-resist",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "id": "c2-predict",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "id": "c2-newborn",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "id": "c2-first",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "id": "c2-tcell",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "id": "c2-hiv",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    },
+    {
+      "id": "reflect",
+      "studentBounds": {
+        "width": 390,
+        "scroll": 390
+      }
+    }
+  ],
+  "widths": [
+    1280,
+    390
+  ],
+  "fontScale": 1.2,
+  "errors": [],
+  "scenarios": [
+    "submit lock",
+    "live counts",
+    "student results hidden until closed",
+    "new round zero with history retained",
+    "offline retry",
+    "all 12 pages have no free text inputs",
+    "fixed choice reason votes",
+    "fullscreen privacy",
+    "late private response discarded",
+    "blackout"
+  ]
+}

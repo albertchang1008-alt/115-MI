@@ -19,3 +19,6 @@ materials-src/*/shots/
 
 # 微免驗收截圖只存本機，不納入版控或發布。
 /docs/micro-immuno-review-screenshots/
+
+# 本機課堂互動預覽、私有簡報與驗收截圖，不納入版控／發布。
+/.classroom-preview/

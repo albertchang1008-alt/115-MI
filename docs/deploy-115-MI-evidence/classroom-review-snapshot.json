@@ -1,0 +1,26 @@
+{
+  "capturedDate": "2026-10-13",
+  "branch": "codex/115-mi-assessments",
+  "head": "a1534089cafd32404a1098e6ed54d09677c26c36",
+  "scope": "selection-only-v2 release implementation; private data excluded; teacher authorized release before Claude review",
+  "files": {
+    ".gitignore": "044887179891187b8b2176997fcb9b0f1d5919ac63a6acdb82fb232e5fe8f9ab",
+    "shared/classroom.ts": "af92ba1be8956acd6ab78092408cae775d1a58f7cd873087b95d7b78f4e051e3",
+    "src/ClassroomInteraction.tsx": "274d4fe74703ca1ac7702fefa2b1e8be03e309b716bd64bd6a8dd337f56821a0",
+    "src/App.tsx": "796dd9734f14e10d62a4e2969f1d92b909b496fbbe5e58cd673b03dcdfcfd8f8",
+    "src/TeachingControl.tsx": "e93563d73c348f020adddbf4bafca00621be9809e6cffb4170bff4aaad1fbb1b",
+    "src/style.css": "30b8f279ee5ced0097a7cfb0da9c945d928b251fc7c47d9d30ff7e72b4942325",
+    "functions/src/classroom.ts": "654fc52f3857daa3124bbbddfc3f00b529fb513bf9db6816fce151f7bb59ccad",
+    "functions/src/index.ts": "b4b9ad400b82c759d2d67b94de724ce01969293b24dc7846f91ea7d13d37a794",
+    "functions/scripts/check-entry.cjs": "927517eda7d700c17808237696be854234b8315f44fce6cb64f2d29d3a760b83",
+    "tests/classroom.test.ts": "33fc2baac92219c2fda839e629164ecde4349ad78fc984696b2850ee53361f74",
+    "functions/tests/classroom.test.cjs": "b9bf9c71bd28c68ebefd991c474b3b4a5a3c3b1f04e34b3b9acd5c99b09d03bb",
+    "scripts/classroom-preview.mjs": "2c4f59adf77301663181c14df44e7ea3edfa2d1779a1cf36733e7e0715216f81",
+    "scripts/classroom-preview-client.tsx": "abec32d9c715fcb64de3375d5805e7113ca1dce73a8f2552e621c0716f28ef5c",
+    "scripts/classroom-ui-check.mjs": "c12e298569959de3f5858aa050ccfc8b85295be8ac95ca0a459d849e5f732d60",
+    "docs/115-MI_CLASSROOM_OPTIONS.md": "f70f670cdb9baca6615f6aa24b3c990dd61509a499f4b235b46835cafa2d8288",
+    "docs/115-MI_CLASSROOM_INTERACTION.md": "31f43b3f8bc061a74eeff81f2eed24e101dcda111478212a4a1a2f4db010372e",
+    "docs/CODEX_TASK_115-MI_CLASSROOM_CLAUDE_REVIEW_2026-10-13.md": "101802b78153997f9d52b1b287e896e9c6efe779edb8fdf30d4b857506a0aa5e"
+  },
+  "deliveryRevision": "selection-only-v2"
+}

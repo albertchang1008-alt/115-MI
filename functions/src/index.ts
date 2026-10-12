@@ -1,3 +1,4 @@
+import { createClassroomHandlers } from './classroom';
 import { createTeachingHandlers } from './teaching';
 import { createAssessmentHandlers, assertPracticeBank, storeAssessmentSources } from './assessments';
 import { appendWrongCarry, wrongCarryDrop, CarryResult } from '../../shared/wrongCarry';
@@ -1508,3 +1509,5 @@ export const getLearningDiagnostics = onCall(options, async (req) => {
 export const { getAssessments, prepareAssessment, controlAssessment, startAssessment, saveAssessment, previewAssessment, assessmentReport, expireAssessments } = createAssessmentHandlers(db, access, options);
 
 export const { getTeachingDeck, getClassroomCourse } = createTeachingHandlers(db, access, options);
+
+export const { controlClassroomInteraction, getClassroomInteraction, submitClassroomInteraction, classroomInteractionReport, classroomInteractionRecords } = createClassroomHandlers(db, access, options);

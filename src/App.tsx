@@ -1,3 +1,5 @@
+import { StudentInteraction } from './ClassroomInteraction';
+import { MI_CLASSROOM_COURSE } from '../shared/classroom';
 import TeachingControl from './TeachingControl';
 import { TeacherAssessments } from './Assessments';
 import CompletionBoard from './CompletionBoard';
@@ -484,14 +486,21 @@ export default function App() {
           <small>v{VERSION}</small>
         </div>
         {course ? (
-          <Student
-            key={course.id}
-            api={api}
-            course={course}
-            classLabel={course.classNames?.[course.enrollmentClassId || ''] || course.enrollmentClassId || ''}
-            uid={profile.uid}
-            notify={notify}
-          />
+          <>
+            {course.id === MI_CLASSROOM_COURSE && (
+              <div className="student-interaction-host">
+                <StudentInteraction key={course.id} api={api} course={course} />
+              </div>
+            )}
+            <Student
+              key={course.id}
+              api={api}
+              course={course}
+              classLabel={course.classNames?.[course.enrollmentClassId || ''] || course.enrollmentClassId || ''}
+              uid={profile.uid}
+              notify={notify}
+            />
+          </>
         ) : (
           <Empty title="尚無已發布課程" detail="教師發布課程後，就會出現在這裡。" />
         )}

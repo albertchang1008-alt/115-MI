@@ -1,3 +1,8 @@
+import {
+  TeacherInteraction,
+  interactiveSlideHTML,
+  interactiveSlideNotes,
+} from './ClassroomInteraction';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { API } from './service';
 import { Course } from '../shared/model';
@@ -177,11 +182,18 @@ export default function TeachingControl({
                       key={slide.id}
                       title={`投影片 ${index + 1}：${slide.title}`}
                       sandbox=""
-                      srcDoc={slideDocument(slide.html)}
+                      srcDoc={slideDocument(interactiveSlideHTML(slide.html, slide.id))}
                       style={{ width: 1920, height: 1080, transform: `scale(${width / 1920})` }}
                     />
                     {black && <div className="teaching-blackout" aria-label="暫時黑屏" />}
                   </div>
+                  <TeacherInteraction
+                    api={api}
+                    course={course}
+                    slideId={slide.id}
+                    black={black}
+                    privateRecords={!full}
+                  />
                   <div className="teaching-playback">
                     <button disabled={index === 0} onClick={() => move(-1)}>
                       上一頁
@@ -208,7 +220,11 @@ export default function TeachingControl({
                     <button aria-expanded={notes} onClick={() => setNotes((v) => !v)}>
                       {notes ? '隱藏' : '查看'}講者備註
                     </button>
-                    {notes && <p className="teaching-notes">{slide.notes || '本頁無備註。'}</p>}
+                    {notes && (
+                      <p className="teaching-notes">
+                        {interactiveSlideNotes(slide.notes || '本頁無備註。', slide.id)}
+                      </p>
+                    )}
                   </>
                 )}
               </>

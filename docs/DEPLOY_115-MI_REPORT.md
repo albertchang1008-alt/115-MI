@@ -42,6 +42,8 @@ Headless Chrome確認登入頁顯示v1.7.1、「使用Google帳號登入」按�
 
 網址與執行階段證據見deploy-115-MI-evidence/*.json；登入截圖只存本機/tmp，不納入版控。本次最後的紀錄提交只更新文件及驗證證據，不改應用程式；仍由pages.yml執行check與發布。
 
-## 停止點
+## 教師權限（2026-10-12 接續完成）
 
-等待教師在新站Google登入並提供UID。尚未設定教師claim、不代執行ADC登入、不匯入題庫／名冊。後續由教師完成ADC登入後，才針對mi-bd885設定教師權限。
+教師已登入新站提供UID，並親自完成gcloud ADC登入。已執行scripts/set-teacher.cjs，指定mi-bd885，保留既有claims新增teacher:true。獨立getUser讀回驗證：projectId=mi-bd885、UID一致、teacher=true、disabled=false。教師須登出再登入讓token更新。
+
+教師已確認Sheet分享MI服務帳戶，尚未代匯入題庫／名冊或實測Sheet讀寫。最後網站提交d9895be之[Actions 38197847642](https://github.com/albertchang1008-alt/115-MI/actions/runs/38197847642)全部成功。這次Auth設定不需網站重新部署；紀錄只在本機提交，未再push。ADC與UID不寫入公開證據檔，沒有服務帳戶金鑰檔。

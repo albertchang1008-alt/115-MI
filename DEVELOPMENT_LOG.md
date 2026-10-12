@@ -1,5 +1,11 @@
 # 開發紀錄
 
+## 2026-10-12｜115-MI 教師權限設定完成 [Codex]
+
+- 教師提供UID、確認Sheet分享MI服務帳戶，並親自完成ADC登入。scripts/set-teacher.cjs指定mi-bd885，保留既有claims新增teacher:true；獨立getUser讀回teacher:true、UID一致、disabled:false。
+- 請教師登出再登入新站更新token，再操作MI後台；尚未代匯入題庫／名冊。只更新Auth權限與紀錄，沒有再次push／網站部署，AP2未動。
+- 官方gcloud 588.0.0於/tmp暫存，checksum與官方一致；憑證不納入版控。
+
 ## 2026-10-12｜115-MI 獨立網站部署 [Codex]
 
 - 教師授權今天部署mi-bd885與albertchang1008-alt/115-MI；新worktree deploy/115-MI-site合入a593796、題庫分離54a1d3c及mi/main歷史。版本1.7.1。

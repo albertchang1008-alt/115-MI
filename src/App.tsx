@@ -1,3 +1,4 @@
+import TeachingControl from './TeachingControl';
 import { TeacherAssessments } from './Assessments';
 import CompletionBoard from './CompletionBoard';
 import { carryMessage, CarryResult } from '../shared/wrongCarry';
@@ -11,6 +12,7 @@ import { useEffect, useRef, useState } from 'react';
 import ChapterUnitPicker, { useChapterUnitSelection } from './ChapterUnitPicker';
 import {
   ListChecks,
+  Presentation,
   LayoutDashboard,
   BookOpen,
   Users,
@@ -84,6 +86,7 @@ import Student from './Student';
 import ThemePicker from './ThemePicker';
 import FontSizePicker from './FontSizePicker';
 const tabs = [
+  ['teaching', '授課控制台', Presentation],
   ['assessments', '正式測驗', ListChecks],
   ['overview', '教學總覽', LayoutDashboard],
   ['courses', '課程與教材', BookOpen],
@@ -200,6 +203,23 @@ export default function App() {
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
   }
+  useEffect(() => {
+    if (api.preview || !profile || profile.teacher || courseId !== '115-1-MI-國考精準對焦') return;
+    let alive = true, pending = false;
+    const refresh = async () => {
+      if (pending) return;
+      pending = true;
+      try {
+        const updated = await api.call<Course>('getClassroomCourse', { courseId });
+        if (alive) setCourses(old => old.map(c => c.id === courseId && JSON.stringify(c) !== JSON.stringify(updated) ? updated : c));
+      } catch { /* Existing course remains usable while temporarily offline. */ }
+      finally { pending = false; }
+    };
+    const timer = setInterval(() => void refresh(), 15000);
+    const focus = () => void refresh();
+    window.addEventListener('focus', focus);
+    return () => { alive = false; clearInterval(timer); window.removeEventListener('focus', focus); };
+  }, [api, profile?.uid, profile?.teacher, courseId]);
   useEffect(() => {
     if (!toast) return;
     const t = setTimeout(() => setToast(''), 7000);
@@ -617,6 +637,8 @@ export default function App() {
             <ResearchEvidence key={course.id} course={course} api={api} notify={notify} />
           ) : !course ? (
             <Empty title="建立第一門課程" detail="請從「課程與教材」建立課程，再匯入名冊及題庫。" />
+          ) : tab === 'teaching' ? (
+            <TeachingControl key={course.id} api={api} course={course} notify={notify} changed={async () => { const data = await api.call('bootstrap'); setCourses(data.courses); }} progress={<CompletionPage course={course} api={api} notify={notify} />} />
           ) : tab === 'assessments' ? (
             <TeacherAssessments key={course.id} api={api} course={course} notify={notify} />
           ) : tab === 'bank' ? (

@@ -104,6 +104,16 @@ export default function Student({
     [exitRequested, setExitRequested] = useState(false),
     [tab, setTab] = useState<'pre' | 'class' | 'post' | 'practice'>('pre'),
     [queueCount, setQueueCount] = useState(preview ? 0 : pending(uid).length);
+  useEffect(() => {
+    if (!unitId || course.units.some(u => u.id === unitId)) return;
+    setUnitId('');
+    setActivityId('');
+    setTaking(false);
+    setQuestions([]);
+    setMixedIds(null);
+    location.hash = `#/course/${encodeURIComponent(course.id)}`;
+    notify('教師已調整單元開放，請依目前課堂進度繼續。');
+  }, [course.units, unitId]);
   const pRef = useRef(progress);
   const takingRef = useRef(taking);
   pRef.current = progress;

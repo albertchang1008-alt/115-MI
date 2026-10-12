@@ -1,0 +1,30 @@
+[
+  {
+    "width": 1280,
+    "all38SlidesTextBounds": true,
+    "slides": 38,
+    "fullscreen": true,
+    "notesHiddenInFullscreen": true,
+    "keyboard": true,
+    "blackout": true,
+    "manualUnitControl": true,
+    "manualExamControl": true,
+    "completionPanel": true,
+    "pageErrors": [],
+    "overflow": false
+  },
+  {
+    "width": 390,
+    "all38SlidesTextBounds": true,
+    "slides": 38,
+    "fullscreen": true,
+    "notesHiddenInFullscreen": true,
+    "keyboard": true,
+    "blackout": true,
+    "manualUnitControl": true,
+    "manualExamControl": true,
+    "completionPanel": true,
+    "pageErrors": [],
+    "overflow": false
+  }
+]

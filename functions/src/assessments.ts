@@ -88,8 +88,10 @@ export function createAssessmentHandlers(
     classIds: e.classIds,
     state: e.state,
     durationSeconds: e.durationSeconds,
-    opensAt: e.opensAt,
-    closesAt: e.closesAt,
+    controlMode: 'manual',
+    createdAt: e.createdAt,
+    ...(e.openedAt ? { openedAt: e.openedAt } : {}),
+    ...(e.closedAt ? { closedAt: e.closedAt } : {}),
     released: e.released,
     total: e.questions.length,
     serverAt: at,
@@ -98,7 +100,7 @@ export function createAssessmentHandlers(
           session: {
             state: s.state,
             startedAt: s.startedAt,
-            expiresAt: Math.min(s.expiresAt, e.closesAt),
+            expiresAt: s.expiresAt,
             revision: s.revision,
             answers: s.answers,
             ...(s.state === 'submitted'
@@ -151,7 +153,7 @@ export function createAssessmentHandlers(
   });
   const prepareAssessment = onCall(options, async (req) => {
     const { p, c } = await access(req, req.data.courseId, true);
-    const { kind, classIds, opensAt, closesAt } = req.data;
+    const { kind, classIds } = req.data;
     if (
       !kinds.includes(kind) ||
       !Array.isArray(classIds) ||
@@ -159,13 +161,6 @@ export function createAssessmentHandlers(
       classIds.some((id: any) => !c.draft.classIds.includes(id))
     )
       fail('請選擇測驗及課程班級');
-    if (
-      !Number.isFinite(opensAt) ||
-      !Number.isFinite(closesAt) ||
-      closesAt <= opensAt ||
-      closesAt - opensAt > 7 * 86400000
-    )
-      fail('請設定有效開放時間（最長七天）');
     const source = (
       await db.doc(`courses/${req.data.courseId}/assessmentSources/${kind}`).get()
     ).data();
@@ -209,8 +204,7 @@ export function createAssessmentHandlers(
         kind,
         title: kind === 'pretest' ? '前測' : '後測',
         classIds: [...new Set(classIds)],
-        opensAt,
-        closesAt,
+        controlMode: 'manual',
         durationSeconds: 480,
         state: 'prepared',
         released: false,
@@ -240,8 +234,7 @@ export function createAssessmentHandlers(
       const e = all.docs.find((d) => d.id === ref.id)?.data();
       if (!e) fail('測驗不存在');
       if (action === 'open') {
-        if (e.state !== 'prepared' || at < e.opensAt || at >= e.closesAt)
-          fail('測驗尚未到開放時間、已逾期或已結束');
+        if (e.state !== 'prepared') fail('測驗已開放或已結束');
         if (
           e.kind === 'posttest' &&
           e.classIds.some(
@@ -268,7 +261,7 @@ export function createAssessmentHandlers(
           )
         )
           fail('本班已公布答案，無法再開放使用相同來源的測驗');
-        tx.update(ref, { state: 'open' });
+        tx.update(ref, { state: 'open', openedAt: at, controlMode: 'manual' });
       } else if (action === 'close') {
         if (e.state === 'closed') return { ok: true };
         tx.update(ref, { state: 'closed', closedAt: at });
@@ -315,7 +308,7 @@ export function createAssessmentHandlers(
         }
         return dto(e, s, at);
       }
-      if (e.state !== 'open' || at < e.opensAt || at >= e.closesAt) fail('測驗尚未開放或已結束');
+      if (e.state !== 'open') fail('測驗尚未開放或已結束');
       s = {
         uid: p.uid,
         classId: p.classId,
@@ -323,7 +316,7 @@ export function createAssessmentHandlers(
         name: p.name || '',
         state: 'active',
         startedAt: at,
-        expiresAt: Math.min(at + e.durationSeconds * 1000, e.closesAt),
+        expiresAt: at + e.durationSeconds * 1000,
         revision: 0,
         answers: {},
         questions: e.questions.map((q: Question) => ({

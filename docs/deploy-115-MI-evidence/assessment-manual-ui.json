@@ -1,0 +1,20 @@
+[
+  {
+    "width": 1280,
+    "noDateInputs": true,
+    "noSchedulePayload": true,
+    "manualOpen": true,
+    "studentSaveSubmit": true,
+    "overflow": false,
+    "pageErrors": []
+  },
+  {
+    "width": 390,
+    "noDateInputs": true,
+    "noSchedulePayload": true,
+    "manualOpen": true,
+    "studentSaveSubmit": true,
+    "overflow": false,
+    "pageErrors": []
+  }
+]

@@ -255,3 +255,45 @@ test('試卷一旦凍結，重新同步不改已開始或已建立的試卷', as
     /已有正式測驗/,
   );
 });
+
+test('無日期即可建立；舊試卷未來／過期時段不限制教師手動開放，每人完整八分鐘', async () => {
+  for (const shift of [-86400000, 86400000]) {
+    const f = fixture();
+    const { id } = await f.call('prepareAssessment', f.teacher, { kind: 'pretest', classIds: ['A'] });
+    // Simulate an existing, frozen scheduled exam without recreating its questions.
+    const entry = [...f.data.entries()].find(([key]) => key.endsWith('/' + id));
+    assert(entry);
+    const [examPath, exam] = entry;
+    assert(!('opensAt' in exam));
+    assert(!('closesAt' in exam));
+    f.data.set(examPath, { ...exam, opensAt: Date.now() + shift, closesAt: Date.now() + shift + 1000 });
+    await assert.rejects(f.call('startAssessment', f.student, { examId: id }), /尚未開放/);
+    await f.call('controlAssessment', f.teacher, { examId: id, action: 'open' });
+    const a = await f.call('startAssessment', f.student, { examId: id });
+    assert.equal(a.controlMode, 'manual');
+    assert.equal(a.session.expiresAt - a.session.startedAt, 480000);
+    assert(!('opensAt' in a));
+    assert(!('closesAt' in a));
+    assert.deepEqual(f.data.get(examPath).questions, exam.questions);
+    await f.call('saveAssessment', f.student, { examId: id, revision: 0, answers: { q0: 'a' } });
+    await f.call('controlAssessment', f.teacher, { examId: id, action: 'close' });
+    const done = await f.call('saveAssessment', f.student, { examId: id, revision: 1, answers: { q0: 'b' } });
+    assert.equal(done.session.state, 'submitted');
+    assert.equal(done.session.answers.q0, 'a');
+    await assert.rejects(f.call('startAssessment', { ...f.student, uid: 'new' }, { examId: id }), /已結束/);
+    await assert.rejects(f.call('controlAssessment', f.teacher, { examId: id, action: 'open' }), /已結束/);
+  }
+});
+
+test('舊作答續考保留原截止時間，不延長倒數', async () => {
+  const f = fixture();
+  const { id } = await f.call('prepareAssessment', f.teacher, { kind: 'pretest', classIds: ['A'] });
+  await f.call('controlAssessment', f.teacher, { examId: id, action: 'open' });
+  await f.call('startAssessment', f.student, { examId: id });
+  const entry = [...f.data.entries()].find(([key]) => key.endsWith('/assessmentSessions/s'));
+  const [path, session] = entry;
+  const deadline = Date.now() + 30000;
+  f.data.set(path, { ...session, expiresAt: deadline });
+  const resumed = await f.call('startAssessment', f.student, { examId: id });
+  assert.equal(resumed.session.expiresAt, deadline);
+});

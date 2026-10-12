@@ -24,6 +24,11 @@ export function StudentAssessments({ api, course }: { api: API; course: Course }
     try {
       const r = await api.call('getAssessments', { courseId: course.id });
       setExams(r.assessments);
+      const latest = r.assessments.find((e: any) => e.id === currentRef.current?.id);
+      if (currentRef.current?.session?.state === 'active' && latest?.session?.state === 'submitted') {
+        adopt(latest);
+        setNotice('已完成交卷，等待教師公布結果。');
+      }
     } catch (e) {
       setNotice(errorText(e));
     }
@@ -144,7 +149,6 @@ export function StudentAssessments({ api, course }: { api: API; course: Course }
           <article className="assessment-card" key={e.id}>
             <h3>{e.title}</h3>
             <p>
-              {time(e.opensAt)} ～ {time(e.closesAt)} ·{' '}
               {e.state === 'open' ? '教師已開放' : e.state === 'closed' ? '已結束' : '尚未開放'}
             </p>
             <button disabled={busy || (!e.session && e.state !== 'open')} onClick={() => start(e)}>
@@ -285,8 +289,6 @@ export function TeacherAssessments({
   const [exams, setExams] = useState<any[]>([]),
     [kind, setKind] = useState('pretest'),
     [classes, setClasses] = useState<string[]>([]),
-    [open, setOpen] = useState(''),
-    [close, setClose] = useState(''),
     [busy, setBusy] = useState(false),
     [report, setReport] = useState<any>(null),
     [preview, setPreview] = useState<any>(null),
@@ -391,7 +393,7 @@ export function TeacherAssessments({
       <h2>正式前後測</h2>
       <p>
         前／後各 7 題，限時 8
-        分鐘。建立即凍結試卷；同步題庫不改已建立的試卷。先結束前測才開後測，所有後測結束後才能公布答案。
+        分鐘（從每位學生開始作答起算）。由教師手動按「開放作答」與「結束測驗」，不需設定日期時間。建立即凍結試卷；同步題庫不改已建立的試卷。先結束前測才開後測，所有後測結束後才能公布答案。
       </p>
       <div className="assessment-form">
         <label>
@@ -414,14 +416,6 @@ export function TeacherAssessments({
           </label>
         ))}
         <label>
-          開放起始
-          <input type="datetime-local" value={open} onChange={(e) => setOpen(e.target.value)} />
-        </label>
-        <label>
-          最晚交卷
-          <input type="datetime-local" value={close} onChange={(e) => setClose(e.target.value)} />
-        </label>
-        <label>
           補考原測驗（一般正式測驗留空）
           <select value={makeup} onChange={(e) => setMakeup(e.target.value)}>
             <option value="">一般正式測驗</option>
@@ -429,7 +423,7 @@ export function TeacherAssessments({
               .filter((e) => e.kind === kind)
               .map((e) => (
                 <option key={e.id} value={e.id}>
-                  {e.title} {time(e.opensAt)}
+                  {e.title} · {e.classIds.join('、')} · {time(e.createdAt)}
                 </option>
               ))}
           </select>
@@ -441,13 +435,11 @@ export function TeacherAssessments({
           </label>
         )}
         <button
-          disabled={busy || !open || !close || !classes.length}
+          disabled={busy || !classes.length || (!!makeup && !reason.trim())}
           onClick={() =>
             run('prepareAssessment', {
               kind,
               classIds: classes,
-              opensAt: Date.parse(open + '+08:00'),
-              closesAt: Date.parse(close + '+08:00'),
               makeupOf: makeup,
               reason,
             })
@@ -463,9 +455,10 @@ export function TeacherAssessments({
             {e.id === makeup ? '（補考來源）' : ''}
           </h3>
           <p>
-            {time(e.opensAt)} ～ {time(e.closesAt)} ·{' '}
             {e.state === 'prepared' ? '待開放' : e.state === 'open' ? '開放中' : '已結束'}
             {e.released ? ' · 已公布' : ''}
+            {e.openedAt ? ` · 開放於 ${time(e.openedAt)}` : ''}
+            {e.closedAt ? ` · 結束於 ${time(e.closedAt)}` : ''}
           </p>
           <button
             disabled={busy}

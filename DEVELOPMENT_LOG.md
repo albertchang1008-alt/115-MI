@@ -1,5 +1,9 @@
 # 開發紀錄
 
+## 2026-10-12｜教師核准私有簡報匯入與授課控制台發布 [Codex]
+- 教師明確同意38頁含答案頁／講者備註完整版存mi-bd885私有Firestore，維持單螢幕模式。匯入teacherAssets/presentation，讀回逐頁完全相同484198bytes；不進公開Git或前端資產。
+- 1b3b4fe準備版本已通過check132+39、44入口及UI1280/390；本輪更新兩個MI API並發布前端，最終狀態見交件及handoff。未操作正式場次／單元開放／學生成績。
+
 ## 2026-10-12｜115-MI 單螢幕授課控制台 [Codex]
 - 教師希望同一介面簡報與學生進度／前後測控制，並指定單螢幕。新增教師入口整合38頁核可HTML投影片、全螢幕與鍵盤／黑屏、獨立備註、既有ProgressBoard／TeacherAssessments／CompletionPage。
 - getTeachingDeck僅教師課程管理者可取，簡報不放公開資產；學生getClassroomCourse只回本班可見發布內容。學生15秒／聚焦更新，單元隱藏時退出一般作答，保留紀錄。

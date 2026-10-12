@@ -9,8 +9,9 @@
 ## 目前狀態（2026-10-13）
 - **教師最新授權「先上線」**：撤銷本輪等待Claude PASS再發布的順序，先發布全選項版到MI；Claude仍待事後獨立驗收，不宣稱已PASS。僅mi-bd885五個新API＋mi/main前端，AP2、題庫、名冊、正式測驗資料不動。
 - **全選項版已完成（10/13）**：12頁只用單選／是非／配對／下拉排序，移除自由填答、匿名文字投影及hide/show文字API。衛教、理由、反思改固定選項；新增選項列docs/115-MI_CLASSROOM_OPTIONS.md，待Claude內容複驗。播放器活動指示同步更新，私有核可簡報原檔不改。
-- **待Claude獨立驗收**：docs/CODEX_TASK_115-MI_CLASSROOM_CLAUDE_REVIEW_2026-10-13.md已換全選項版，指紋selection-only-v2；檢視未提交工作樹＋新檔，不只HEAD。結論docs/115-MI_CLASSROOM_CLAUDE_REVIEW.md尚未產生，舊短答PASS不可沿用。
-- 本輪基底HEAD=a153408，codex/115-mi-assessments；後端五API已成功部署mi-bd885，前端待一般push；未開正式場次或更動Sheet／Excel。完整check135+42=177、49入口全過；54人所有題型計票及後端併發重送／收票競爭通過，UI12頁1280/390／1.2字級／零輸入框通過。預覽8771；私有簡報與28截圖僅.classroom-preview/，忽略不入Git。依教師最新授權先發布MI；真實Google登入與Firestore跨裝置承載尚待驗收。
+- **待Claude獨立驗收**：docs/CODEX_TASK_115-MI_CLASSROOM_CLAUDE_REVIEW_2026-10-13.md已換全選項版，指紋selection-only-v2；檢視發布commit c2c1b1e與最新文件／指紋。結論docs/115-MI_CLASSROOM_CLAUDE_REVIEW.md尚未產生，舊短答PASS不可沿用。
+- **已發布全選項版**：功能commit=c2c1b1ee0fdd86c4d23fa89e00b764c5d257e309，正常push mi/main；Actions38280980734 build/deploy success。mi-bd885五API均ACTIVE（總55）。完整check135+42=177／49入口及UI12頁1280/390／1.2字級通過；私有簡報與截圖忽略。未代開互動／前後測或更動Sheet／Excel；真實Google學生與跨裝置承載待驗收。六網址200、正式JS含MI全選項／新API、登入頁0pageerror、五API未登入401，證據classroom-site.json；最新紀錄commit以git log為準（紀錄只存本機，程式發布仍c2c1b1e）。
+
 - 教師授權「不分組講義、正式前後測實作上線、完整題庫同步Google Sheet」，並指定同Sheet「班級名冊」。本機從8753865建立專用分支；版本仍1.7.1。最新手動開放功能提交c33dbe7a84d307905749b40561447911d7e18ead已一般push到mi/main；後續紀錄提交以git log為準。
 - 正式測驗前／後各7題、8分鐘、一次交卷，答案僅後端私有；儲存版本防雙視窗覆蓋、續原場次、伺服器逾時重批、重送交卷不重複計分。後測全結束後教師才公布成績／解析；不寫一般練習最高分、錯題或完成度。
 - 新增「正式測驗」教師入口（凍結試卷、班級／手動開放、開放/結束/公布、私有預覽、補考理由留痕、作答報表與配對CSV）。學生從課程首頁「正式前後測」進入；教師前台預覽不寫正式成績。
@@ -72,9 +73,9 @@
 
 ## 下一步
 - 全選項版題目、程式與預覽已更新，交Claude依新版交辦獨立驗收，尤其新增選項的醫學內容與題意歧義。
-- Claude先依10/13交辦獨立驗收，寫PASS／需修正／受阻報告；需修正先交回Codex，不上線。本輪教師已另授權先發布MI；Claude待事後複驗，雲端Google登入／跨裝置驗收另列。
+- Claude依更新交辦做上線後獨立驗收，寫PASS／需修正／受阻報告；需修正交回Codex。本輪教師已另授權先發布MI；Claude待事後複驗，雲端Google登入／跨裝置驗收另列。
 - 教師看本機預覽：http://127.0.0.1:8771/docs/115-MI_CLASSROOM_PREVIEW.html。開教師與學生分頁，用同一瀏覽器選題→開放→送出→看即時票數→結束→再投；本機mock不連正式資料。
-- 五個MI互動API已部署成功；前端待commit／一般push至mi/main。真實學生Google登入與Firestore跨裝置承載仍待測試班驗收；不代操作真實課堂場次或正式前後測。
+- 五個MI互動API與前端已發布，詳docs/115-MI_CLASSROOM_RELEASE.md。真實學生Google登入與Firestore跨裝置承載仍待測試班驗收；不代操作真實課堂場次或正式前後測。
 - 既有授課控制台1b3b4fe＋私有簡報匯入d0c5da8已上線，後續紀錄HEAD=a153408；Actions38257575183成功、六網址200。38頁含答案／備註教師明確核准存MI私有Firestore，讀回484198bytes相同，公開資產不含私有HTML／備註。
 - 正式前後測沿用教師手動建立／開放／結束／公布：前後各7題、8分鐘；目前未代開或公布。看板單元控制與正式收卷分開；換投影片不改開放狀態。
 - Sheet83題／一般69題／私有前後14題、N55134＋N55220名冊維持；本輪未同步或更動。Ch6五題疑義仍排除，待另行審訂。

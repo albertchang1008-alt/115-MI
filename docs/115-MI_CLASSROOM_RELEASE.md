@@ -8,6 +8,12 @@
 
 後端指令使用--project mi-bd885及functions:platform:<函式>篩選。初次未寫codebase的篩選被CLI拒絕，未執行雲端變更；已改用platform。五個名稱：controlClassroomInteraction、getClassroomInteraction、submitClassroomInteraction、classroomInteractionReport、classroomInteractionRecords。既有規則不改，不輪換SHEETS_SYNC_KEY。
 
-五個新API已全部成功部署到mi-bd885（asia-east1）；前端待一般push與Actions，發布後檢查補入本文件。真實學生Google登入／跨裝置承載尚待測試班驗收，不以本機mock宣稱通過。
+五個新API已全部成功部署到mi-bd885（asia-east1）；前端功能commit `c2c1b1ee0fdd86c4d23fa89e00b764c5d257e309`已正常push mi/main；[Actions38280980734](https://github.com/albertchang1008-alt/115-MI/actions/runs/38280980734) build與deploy success。functions:list讀回五個均ACTIVE、asia-east1，專案總55個函式。真實學生Google登入／跨裝置承載尚待測試班驗收，不以本機mock宣稱通過。
 
 使用：教師重新整理MI站，進授課控制台，選互動頁／班級，進全螢幕後按開放作答。學生登入自己的課序，進目前課堂互動，逐項選擇並送出。教師看票數後結束或再投一輪；前後測維持獨立控制。
+
+## 線上驗證完成
+- 網站首頁、兩份微免教材、三份CHP既有教材共六網址HTTP200。
+- 正式JS確認mi-bd885、課堂互動API及全選項介面已載入，沒有舊匿名填答提示；Chrome登入按鈕正常、0 pageerror。
+- 五個API未登入呼叫均401；未建立／開放任何場次。證據`docs/deploy-115-MI-evidence/classroom-site.json`。
+- Claude尚待獨立驗收；真實學生登入、跨裝置承載另待測試班，未宣稱通過。後續紀錄commit只在本機，不改已發布程式。

@@ -1,6 +1,6 @@
 # 115-MI 即時課堂互動：全選項版本機交件
 
-2026-10-13；版本1.7.1；分支codex/115-mi-assessments；基底a153408。尚未commit、push、部署或寫正式雲端。教師最新指示「先上線」，優先於先等Claude驗收；本輪發布結果見docs/115-MI_CLASSROOM_RELEASE.md，Claude尚未獨立驗收。
+2026-10-13；版本1.7.1；分支codex/115-mi-assessments；基底a153408。已發布功能commit c2c1b1e，Actions38280980734成功；五API已部署，未代開場次。教師最新指示「先上線」，優先於先等Claude驗收；本輪發布結果見docs/115-MI_CLASSROOM_RELEASE.md，Claude尚未獨立驗收。
 
 ## 預覽與題目
 - [截圖集](http://127.0.0.1:8771/docs/115-MI_CLASSROOM_PREVIEW.html)

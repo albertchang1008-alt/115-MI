@@ -2,6 +2,7 @@
 
 ## 2026-10-13｜教師授權全選項課堂互動先發布 [Codex]
 - 教師最新指示「先上線」，取代等待Claude PASS的發布順序；Claude獨立驗收仍待進行，不宣稱已通過。僅MI五個新API及MI網站，不動AP2、既有正式場次、名冊、Sheets或Excel。
+- 五個新函式mi-bd885／asia-east1均ACTIVE，總55；功能c2c1b1ee0fdd86c4d23fa89e00b764c5d257e309一般push mi/main成功，Actions38280980734 build/deploy success。六網址200、新版MI bundle確認、五API未登入401、Chrome登入頁0pageerror；未開真實場次，教師／學生登入後跨裝置驗收另待進行。
 - 發布使用已通過完整check177項、49入口及UI12頁的同一程式版本；私有JSON、截圖、.env.local皆忽略，不發布。部署結果接續補入交件報告及handoff。
 
 ## 2026-10-13｜115-MI全選項課堂互動完成 [Codex]

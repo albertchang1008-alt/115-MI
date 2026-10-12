@@ -1,0 +1,70 @@
+{
+  "verifiedAt": "2026-10-12T17:00:36.887Z",
+  "urls": [
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/",
+      "status": 200
+    },
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/materials/micro-bacteria-review-v1/index.html",
+      "status": 200
+    },
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/materials/immuno-concepts-review-v1/index.html",
+      "status": 200
+    },
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/CHP07_immune_infographic.html",
+      "status": 200
+    },
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/CHP08_hypersensitivity_infographic.html",
+      "status": 200
+    },
+    {
+      "url": "https://albertchang1008-alt.github.io/115-MI/CHP16_mycology_infographic.html",
+      "status": 200
+    }
+  ],
+  "bundle": {
+    "miProject": true,
+    "newApi": true,
+    "selectionOnly": true,
+    "noOldInputCopy": true
+  },
+  "api": [
+    {
+      "name": "controlClassroomInteraction",
+      "status": 401
+    },
+    {
+      "name": "getClassroomInteraction",
+      "status": 401
+    },
+    {
+      "name": "submitClassroomInteraction",
+      "status": 401
+    },
+    {
+      "name": "classroomInteractionReport",
+      "status": 401
+    },
+    {
+      "name": "classroomInteractionRecords",
+      "status": 401
+    }
+  ],
+  "loginPageErrors": [],
+  "authenticatedStudentE2E": "pending; no real class or assessment opened",
+  "releaseCommit": "c2c1b1ee0fdd86c4d23fa89e00b764c5d257e309",
+  "actions": {
+    "runId": 38280980734,
+    "conclusion": "success"
+  },
+  "functions": {
+    "projectId": "mi-bd885",
+    "region": "asia-east1",
+    "allFiveActive": true,
+    "total": 55
+  }
+}

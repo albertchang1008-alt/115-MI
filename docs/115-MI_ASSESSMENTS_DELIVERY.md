@@ -30,4 +30,8 @@
 - functions/firestore已明確部署mi-bd885：新增8函式均ACTIVE，總48，逾時索引READY；未登入三個實測API回401。SHEETS_SYNC_KEY版本2、runtime SA不變；不改default、AP2、SDK及GitHub workflow。
 
 ## 網站發布
-本節待本輪GitHub Actions與正式網址驗證後補記。不得將後端成功當成前端已上線。
+功能提交：`fe814dd381f196ce67de7e4e79386f5febc8dcc7`，已一般push至mi/main。
+
+[GitHub Actions 38218533124](https://github.com/albertchang1008-alt/115-MI/actions/runs/38218533124) 的build、deploy均success；正式首頁、兩份微免與三份CHP共六網址均200。公開JS確認含正式前後測及新函式呼叫、Firebase設定mi-bd885；Google登入按鈕可用、v1.7.1、0pageerror。後續交件紀錄提交不改功能，以git log為準。
+
+正式站：https://albertchang1008-alt.github.io/115-MI/ 。教師重新整理後台「正式測驗」設定N551/N552與時間，再建立及開放試卷；本輪沒有建立真實學生成績。

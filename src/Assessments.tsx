@@ -398,7 +398,14 @@ export function TeacherAssessments({
       <div className="assessment-form">
         <label>
           種類
-          <select value={kind} onChange={(e) => setKind(e.target.value)}>
+          <select
+            value={kind}
+            onChange={(e) => {
+              setKind(e.target.value);
+              setMakeup('');
+              setReason('');
+            }}
+          >
             <option value="pretest">前測</option>
             <option value="posttest">後測</option>
           </select>

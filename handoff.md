@@ -7,6 +7,9 @@
 - 主目錄feature/respiratory-infographics及其他worktree有其他工作，不動。
 
 ## 目前狀態（2026-10-13）
+- 教師控制台實機：僅test班UI建立前後測、開放／結束／公布、報表及55筆8欄CSV、38頁簡報、互動開關／再投、黑屏／全螢幕／備註成功；驗收已收回，原正式前測prepared與三班恢復、互動入口空。學生重新登入／重整未再見internal。無新學生成績；正式N551/N552未開放。
+- 10/13真實test端驗收：前測86／後測100、延後公布及前測阻擋後測、單選／排序各1票與鎖定保存、一般完整測驗100與重整紀錄通過。原正式前測prepared未開放，班級N551/N552/test已恢復；驗收場次classIds清空、closed且保留audit／sessions；互動closed／latest空，一般test進度保留。完整報告在主目錄docs/mi-exam-review/STUDENT_ACCEPTANCE.md。
+- 教師10/13授權「現在可以更新」：發布Student.tsx影片重整續播等待進度／失敗重試，以及Assessments.tsx切種類清空補考來源與理由。原生Chrome兩fixture已驗；本輪完整135前端＋42Functions全部通過（0跳過）、版本檢查、前端build、後端編譯／49入口成功。先前headless沙箱限制已以核准沙箱外重跑排除。此次僅MI前端，Functions無改動不部署；發布提交與Actions結果待完成後補記。跨裝置、自然逾時、其餘影片／HTML全通關仍未实測。
 - **教師最新授權「先上線」**：撤銷本輪等待Claude PASS再發布的順序，先發布全選項版到MI；Claude仍待事後獨立驗收，不宣稱已PASS。僅mi-bd885五個新API＋mi/main前端，AP2、題庫、名冊、正式測驗資料不動。
 - **全選項版已完成（10/13）**：12頁只用單選／是非／配對／下拉排序，移除自由填答、匿名文字投影及hide/show文字API。衛教、理由、反思改固定選項；新增選項列docs/115-MI_CLASSROOM_OPTIONS.md，待Claude內容複驗。播放器活動指示同步更新，私有核可簡報原檔不改。
 - **待Claude獨立驗收**：docs/CODEX_TASK_115-MI_CLASSROOM_CLAUDE_REVIEW_2026-10-13.md已換全選項版，指紋selection-only-v2；檢視發布commit c2c1b1e與最新文件／指紋。結論docs/115-MI_CLASSROOM_CLAUDE_REVIEW.md尚未產生，舊短答PASS不可沿用。

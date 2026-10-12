@@ -1,3 +1,20 @@
+## 2026-10-13 Codex：教師授權發布續播與測驗種類切換修正
+- Student等待雲端進度後建立活動播放器，讀取失敗可重試；TeacherAssessments切換前／後測清空補考來源及理由，附兩份本機回歸fixture。
+- 完整前端135＋Functions42全過0跳過；前端TypeScript／Vite／版本與後端runtime／編譯／49入口成功。先前headless沙箱受阻已核准沙箱外重跑通過。
+- 僅正常快轉push至mi/main發布前端；不部署Functions，不修改課程、名冊、正式場次或成績。Actions及線上載入結果完成後補記。
+
+## 2026-10-13 Codex：115-MI教師控制台實機驗收
+- 正式Chrome教師UI僅test班完成前測補考／後測建立、開放、預覽、結束及公布，雲端audit一致；作答報表及55筆8欄配對CSV下載正常。授課38頁、互動開關／再投、換頁、黑屏、全螢幕內結束與備註隱藏通過。
+- 發現前測補考切後測殘留makeup/reason，建立遭拒；MI Assessments.tsx切種類清空兩欄，本機真實React fixture回歸成功。現場先重整正式測驗頁再建立一般後測。此修正及影片續播修正均未部署。
+- 僅驗收test場次，0新作答；兩試卷closed／released並收回classIds，互動closed／入口清空，原正式前測prepared未公布與N551/N552/test恢復。學生重新登入／重整未再見internal。跨裝置／54人承載未實測。
+- 報告主目錄docs/mi-exam-review/TEACHER_ACCEPTANCE.md、去識別JSON與3張截圖；前端編譯/build、59前端＋42Functions通過，先前4headless受阻不列通過。主目錄e8805f8／MI75801d1，未commit／push／部署，待新修正上線授權。
+
+## 2026-10-13 Codex：115-MI真實學生前後測／課堂互動驗收與影片修正
+- test已可進入；前測6/7=86、後測7/7=100，儲存重載、交卷鎖定、延後公布、前測未結束阻擋後測通過。兩輪不計分單選／排序各1回答，未作答驗證、送出鎖定、重整保存與結束統計通過。
+- 一般2題完整測驗100分後端持久、閃卡不增次數、選做不增必做；TB24秒雲端位置與重新進入續播通過。直接重整start=0已重現，MI Student.tsx本機修正等待進度／失敗重試，延遲fixture0→1次/start42通過，未上線。
+- 正式前測原班級／prepared恢復、驗收測驗收回班級且保留作答稽核、互動closed並清空latest；不動N551/N552成績。報告STUDENT_ACCEPTANCE.md及去識別JSON／4截圖。59前端與42Functions測試、兩端編譯／49入口通過；選定100項前端96通過4headless沙箱受阻，不列通過。非54人或跨裝置；其餘影片／HTML完整通關另列。
+- 根目錄feature/respiratory-infographics=e8805f8，MI codex/115-mi-assessments=75801d1，未commit／push／部署；新修正發布需教師明確授權。
+
 # 開發紀錄
 
 ## 2026-10-13｜教師授權全選項課堂互動先發布 [Codex]

@@ -87,6 +87,7 @@ export default function Student({
   sim = 'none',
   notify,
 }: Props) {
+  const [progressLoad, setProgressLoad] = useState({ ready: false, error: '', retry: 0 });
   const [progress, setProgress] = useState<Progress>(emptyProgress()),
     [unitId, setUnitId] = useState(initialUnit || ''),
     [activityId, setActivityId] = useState(initialActivity || ''),
@@ -179,6 +180,7 @@ export default function Student({
   }, [course.id, preview]);
   useEffect(() => {
     let active = true;
+    setProgressLoad(s => ({ ...s, ready: false, error: '' }));
     api
       .call<Progress>('getProgress', { courseId: course.id })
       .then((p) => {
@@ -188,12 +190,13 @@ export default function Student({
         }
         if (preview) void api.call('setPreviewProgress', { progress: p });
         setProgress(p);
+        setProgressLoad(s => ({ ...s, ready: true, error: '' }));
       })
-      .catch((e) => notify(e.message));
+      .catch((e) => { if (active) { setProgressLoad(s => ({ ...s, error: e.message })); notify(e.message); } });
     return () => {
       active = false;
     };
-  }, [api, course.id, sim]);
+  }, [api, course.id, sim, progressLoad.retry]);
   useEffect(() => {
     if (tab !== 'practice') return;
     const parsed = parseStudentRoute(location.hash, course.id);
@@ -335,6 +338,9 @@ export default function Student({
   }
   if (activityId.startsWith('__mixed_')) return <><StudentSettings /><MixedPractice key={activityId} api={api} course={course} progress={progress} uid={uid} selectedIds={mixedIds} mode={activityId.split('_')[3] as any} count={Number(activityId.split('_')[4])} onProgress={setProgress} onBack={() => route()} /></>;
   if (unit && activityId === '__wrongcards') return <><StudentSettings /><UnitWrongPractice api={api} course={course} unit={unit} progress={progress} onProgress={setProgress} onBack={() => route(`/unit/${encodeURIComponent(unit.id)}?tab=practice`)} /></>;
+  // 等待雲端進度，避免直接重整活動路由時播放器先用 0 秒建立。
+  if (activity && unit && chapter && !progressLoad.ready)
+    return <><StudentSettings /><main><p role={progressLoad.error ? 'alert' : 'status'}>{progressLoad.error ? '無法載入學習紀錄，請重試。' : '正在載入學習紀錄…'}</p>{progressLoad.error && <button onClick={() => setProgressLoad(s => ({ ...s, retry: s.retry + 1 }))}>重新載入</button>}<button onClick={() => route(`/unit/${encodeURIComponent(unit.id)}?tab=${phaseTab(activity.phase)}`)}>返回單元</button></main></>;
   if (activity && unit && chapter)
     return <><StudentSettings /><ReadingPage course={course} unit={unit} chapterName={selectedChapterName} activity={activity} api={api} uid={uid} progress={progress} onSave={saveActivity} onBack={() => route(`/unit/${encodeURIComponent(unit.id)}?tab=${phaseTab(activity.phase)}`)} /></>;
   if (taking && unit && mode === 'flashcard') return <><StudentSettings /><Flashcards rows={questions.map(q => ({q,unit}))} onBack={() => {setTaking(false);route(`/unit/${encodeURIComponent(unit.id)}?tab=practice`);}} onPractice={() => {setTaking(false);route(`/unit/${encodeURIComponent(unit.id)}/quiz?mode=draw&n=10`);void start('quiz',10,unit);}} /></>;

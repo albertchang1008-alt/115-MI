@@ -24,3 +24,8 @@
 - AP2、其他worktree、題庫Excel、.firebaserc default、教材SDK與既有核可教材未修改。
 
 - 私有簡報Firestore匯入最初遭自動核准審查拒絕；教師2026-10-12明確同意38頁完整版含答案頁／講者備註存mi-bd885私有Firestore後完成匯入，38頁讀回完全相同484198bytes。
+
+## 正式發布驗證
+- 功能`1b3b4fe`＋匯入紀錄`d0c5da8d78e0b4b7220f48e6de9403bf4c2d71c6`已正常push mi/main；[Actions38257575183](https://github.com/albertchang1008-alt/115-MI/actions/runs/38257575183) build/deploy成功。
+- 兩個新版API明確部署mi-bd885成功；未登入皆401，直接讀取teacherAssets文件403；全Client deny規則不變。
+- 六個正式網址200，公開JS含授課控制台、全螢幕與新API呼叫，核對38頁私有HTML/備註皆未包含；Chrome登入可用、版本1.7.1、0pageerror。第一輪網路fetch暫時失敗，重試完整核對通過。

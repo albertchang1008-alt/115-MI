@@ -1,0 +1,17 @@
+[
+  {
+    "name": "getTeachingDeck",
+    "status": 401,
+    "anonymousDenied": true
+  },
+  {
+    "name": "getClassroomCourse",
+    "status": 401,
+    "anonymousDenied": true
+  },
+  {
+    "name": "teacherAssets direct read",
+    "status": 403,
+    "anonymousDenied": true
+  }
+]

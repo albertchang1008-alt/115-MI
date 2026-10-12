@@ -25,64 +25,12 @@ export interface MaterialCatalogEntry {
   note?: string;
 }
 export const MATERIAL_CATALOG: Record<string, MaterialCatalogEntry> = {
-  'course-orientation-v1': { label: '課程介紹、規範、評量與參訪圖卡', tracking: 'interactive', nodeTotal: 8, questionTotal: 10, note: '10 題全對才送出完成' },
-  // questionTotal=11 是「先備知識 6 題＋病例限時連勝 5 題」兩層的總和，用於診斷分母；
-  // 實際「通關」判定是病例 5 題要在限時內全對（見 index.html 的 score === 5），
-  // 不是 11 題全對，所以這裡不加 note，避免暗示兩者是同一件事。
-  'hemostasis-mechanisms-v1': { label: '止血機制與凝血病理圖卡', tracking: 'interactive', nodeTotal: 6, questionTotal: 11 },
-  // v2：2026-09-25 教師決定入門化，移除病理與藥理內容（v1 已發布，保留不動）。
-  'hemostasis-mechanisms-v2': { label: '止血機制與凝血圖卡', tracking: 'interactive', nodeTotal: 6, questionTotal: 11 },
-  // 跟 hemostasis-mechanisms-v1 同樣的先備知識＋限時連勝兩層結構，通關判定是
-  // 病例 5 題限時全對，不是 11 題全對。
-  'blood-gas-transport-v1': { label: '血液氣體運送圖卡', tracking: 'interactive', nodeTotal: 6, questionTotal: 11 },
-  // v2：2026-09-25 教師決定入門化，節點 5、6 改為紅血球回收與造血原料（v1 已發布，保留不動）。
-  'blood-gas-transport-v2': { label: '血液氣體運送圖卡', tracking: 'interactive', nodeTotal: 6, questionTotal: 11 },
-  // 這份教材有兩層題目：foundationQuestions（6 題「先備知識」，要先全部答對才解鎖）
-  // ＋ caseQuestions（5 題情境／陷阱題的限時連勝挑戰），兩層都會呼叫 CL.answer()，
-  // 所以題目總數是 6+5=11，不是只算連勝挑戰的 5 題——這是這次用 audit 腳本重新核對
-  // 才發現的，README 先前完全沒填實際數字（寫「既有正式版本」），不算修正錯誤數字。
-  // 通關判定是 5 題限時連勝全對（見 index.html 的 finish(passed) 呼叫點），不是 11
-  // 題全對，所以不加 note。
-  'blood-composition-v1': { label: '血液的組成圖卡', tracking: 'interactive', nodeTotal: 6, questionTotal: 11 },
-  // node 數是人工核對出來的：CARDS(12，每張卡用「card:索引:id」各自算一個節點，不會
-  // 因為卡片共用同一個 id 而合併)＋TREE(5)＋SEQS(4)＋測驗過關(1) = 22，跟教材自己內部
-  // 的 `var TOTAL = CARDS.length + TREE.length + SEQS.length + 1;` 進度條常數一致，
-  // 可以互相對照。`npm run materials:audit` 偵測不到這份（節點 id 是變數組出來的），
-  // 這裡的數字不是腳本自動產生的，之後改教材內容要記得回來同步這個數字。
-  'blood-pre-v1': { label: '血液單元前測（血液組成、造血、止血、淋巴總複習）', tracking: 'interactive', nodeTotal: 22, questionTotal: 10, note: '10 題全對才送出完成' },
-  // node 數同樣是人工核對：N 物件 32 個主題 key＋FLOWS 3 條裡只有 rbc-homeostasis
-  // 不在 N 裡（另外 2 條 id 跟 N 的 key 重複，不會多算）＋PAIRS 10 組 = 43。
-  // `npm run materials:audit` 一樣偵測不到（節點 id 來自物件 key 與陣列索引，不是
-  // 固定 data-node-id 屬性），這裡的數字不是腳本自動產生的。
-  'blood-post-v1': { label: '血液單元後測（全景地圖、機轉流程、易混淆配對、闖關）', tracking: 'interactive', nodeTotal: 43, questionTotal: 15, note: '5 關（每關 3 題）全部過關才送出完成' },
-  // v1 為教材元件庫樣板，保留但不發布；正式版使用圖像強化的 v2。
-  'heart-structure-v1': { label: "心臟構造與解剖生理圖卡", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'heart-structure-v2': { label: '心臟構造與解剖生理圖卡（圖像強化版）', tracking: 'interactive', nodeTotal: 6, questionTotal: 11 },
-  'ecg-basics-v1': { label: "心電圖基礎", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'cardiac-conduction-v1': { label: "心臟的傳導系統", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'cardiac-cycle-v1': { label: "心動週期", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'cardiac-conduction-v2': { label: "心臟的傳導系統（圖像強化版）", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'cardiac-cycle-v2': { label: "心動週期（圖像強化版）", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'coronary-circulation-v1': { label: "心臟血液供應（圖像強化版）", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'blood-vessels-v1': { label: "血管構造解析｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'circulation-routes-v1': { label: "循環路線｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'blood-pressure-regulation-v1': { label: "血壓的調控｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'lymphatic-system-v1': { label: "淋巴系統｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'hemodynamics-v1': { label: "血液動力學｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'cardiac-output-v1': { label: "心輸出量的調節｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'blood-pressure-measurement-v1': { label: "血壓測量｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'capillary-exchange-v1': { label: "微血管物質交換與組織液｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'major-vessels-v1': { label: "全身主要動脈與靜脈｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'blood-types-v1': { label: "血型與輸血｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'lymphoid-organs-v1': { label: "淋巴器官｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
-  'cardiac-electrical-v1': { label: "心臟的電性活動｜互動資訊圖表", tracking: 'interactive', nodeTotal: 9, questionTotal: 11, note: "9 個知識節點；6 先備＋5 情境" },
-  'rbc-homeostasis-v1': { label: "紅血球的恆定機制｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "6 個知識節點；6 先備＋5 情境" },
   'micro-bacteria-review-v1': { label: "細菌怎麼害人，我們怎麼對付它｜互動資訊圖表", tracking: 'interactive', nodeTotal: 6, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
   'immuno-concepts-review-v1': { label: "從小安的第一年認識免疫｜互動資訊圖表", tracking: 'interactive', nodeTotal: 8, questionTotal: 11, note: "先備 6 題逐題解鎖；病例 5 題全對才通關" },
 };
 
 // 正式教材都發布在 GitHub Pages 的 materials/<版本>/index.html；教師選教材版本時自動帶入。
-export const MATERIALS_BASE_URL = 'https://albertchang1008-alt.github.io/115-1-AP2/materials/';
+export const MATERIALS_BASE_URL = 'https://albertchang1008-alt.github.io/115-MI/materials/';
 export function materialPageUrl(slug: string) {
   return `${MATERIALS_BASE_URL}${slug}/index.html`;
 }

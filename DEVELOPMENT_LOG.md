@@ -1,5 +1,11 @@
 # 開發紀錄
 
+## 2026-10-12｜115-MI 獨立網站部署 [Codex]
+
+- 教師授權今天部署mi-bd885與albertchang1008-alt/115-MI；新worktree deploy/115-MI-site合入a593796、題庫分離54a1d3c及mi/main歷史。版本1.7.1。
+- AP2公開教材移除；保留兩份微免與三份CHP，HTML僅SDK站別替換；catalog網址改MI、README保留供sync。測試調整逐條記於docs/DEPLOY_115-MI.md，不改教材判定。
+- 前端132／Functions29與兩端build、版本check全過；40個asia-east1函式＋Firestore規則索引部署成功，新SHEETS_SYNC_KEY版本2生效。後端成功才推mi/main，前端結果見部署報告；停等教師登入UID。AP2專案／repo未push部署，default未改。
+
 ## 115-MI／115-2-AP2題庫完全分離（2026-10-11，Codex，版本不變）
 
 - 依教師更正（Claude先前將不同課程題庫合併為錯誤），自release HEAD a593796開fix/separate-115-MI-bank；AP2題庫原位還原e8805f8，位元／SHA256完全相同：227題，說明1–34列，沒有MI題目。
@@ -229,7 +235,7 @@
 
 ## 三份生理教材預覽（2026-10-01，Codex，未發布）
 
-- 在 `codex/blood-vessel-infographic` managed工作樹完成血壓調控、淋巴系統、血液動力學三份獨立預覽；各6節點與11題、21张SVG，390px主圖最小14.94px、節點16.47px。108前端測試、建置、60張截圖與互動驗證通過；來源修訂与複核限制見該工作樹 `docs/PHYSIOLOGY_MATERIALS_PREVIEW.md`。未登錄／commit／發布。
+- 在 `codex/blood-vessel-infographic` managed工作樹完成血壓調控、淋巴系統、血液動力學三份獨立預覽；各6節點與11題、21张SVG，390px主圖最小14.94px、節點16.47px。108前端測試、建置、60張截圖與互動驗證通過；來源修訂與複核限制見該工作樹 `docs/PHYSIOLOGY_MATERIALS_PREVIEW.md`。未登錄／commit／發布。
 
 ## 五份資訊圖表登錄與題庫補登（2026-10-02，Codex，未部署）
 
@@ -813,6 +819,6 @@
 - 建立獨立 React／TypeScript／Vite 平台及 Firebase Functions。
 - 新教師工作區、課程編輯與共用學生前台預覽。
 - 校內名冊驗證、整組作答、防重送、即時個人進度。
-- 版本化题庫、Sheets 發布、互動 HTML 套件與 YouTube 片段。
+- 版本化題庫、Sheets 發布、互動 HTML 套件與 YouTube 片段。
 - 增量報表、完成度看板、結算快照、匯出及版本檢查。
 - 測試及雲端驗收狀態請參考 docs/ACCEPTANCE.md；不將尚未連接的外部服務列為完成部署。

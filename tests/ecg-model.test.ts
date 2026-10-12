@@ -47,12 +47,3 @@ test('只計入完整落在畫面內的波段；R-R 由 R 峰到下一個 R 峰'
   const f = features(beats[1], beats[2]);
   close(f.RR[1] - f.RR[0], 1.0); close(f.RR[0], rPeak(beats[1]));
 });
-
-test('ECG 建置檔：單檔、含 SDK、無 CDN、包含 widget 與全部題目 ID', () => {
-  const html = fs.readFileSync('public/materials/ecg-basics-v1/index.html', 'utf8');
-  const content = JSON.parse(fs.readFileSync('materials-src/ecg-basics/content.json', 'utf8'));
-  assert.match(html, /course-learning\.js/); assert.doesNotMatch(html, /cdn\.|tailwind/i);
-  assert.match(html, /window\.EcgSim/); assert.match(html, /window\.EcgLabel/);
-  for (const item of [...content.nodes, ...content.foundation, ...content.cases]) assert.match(html, new RegExp(item.id));
-  assert.equal(content.foundation.filter((q: any) => q.type === 'label').length, 4);
-});

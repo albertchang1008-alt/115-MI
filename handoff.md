@@ -1,46 +1,25 @@
-# 專案交接（現況）
+# 專案交接（115-MI 現況）
 目前版本：1.7.1
-> 只寫現況（約 150 行內）；歷史見 DEVELOPMENT_LOG.md 與 docs/archive/。
 
 ## 給接手的 AI agent
-1. 開工讀本檔＋git log --oneline -5，需要功能細節再讀 docs 規格。
-2. 改動前確認分支；未經教師明確同意，不 push、合併或部署 main（push main 自動上線）。
-3. 每段工作收工更新本檔與 DEVELOPMENT_LOG.md；commit 結尾 [Codex]；不略過測試。
-4. Claude 寫規格／獨立驗收，Codex 實作，教師裁定內容與部署。
+- 開工讀本檔、確認分支；commit 結尾 [Codex]，不略過測試。
+- 本 worktree 是 115-MI，禁止向 origin（AP2）push 或部署 ap2-7ed91；不得執行 AP2 scripts/deploy.sh。
+- 每段工作更新本檔與 DEVELOPMENT_LOG.md；部署流程見 docs/DEPLOY_115-MI.md。
 
-## 目前狀態（2026-10-11）
-- 教師更正課程題庫分離：指定release worktree自a593796開 `fix/separate-115-MI-bank`；修正已本機commit（訊息結尾[Codex]），工作目錄乾淨，版本1.7.1。不push、不部署；Excel不是網站內容，本次沒有網站更新需求，下次正式部署再一併帶上。
-- AP2用 `html/資訊圖表題庫_上傳用.xlsx` 已原位還原e8805f8，位元完全相同（SHA256 48dca2aa0cbc98c858591aa7489c80baf018fa359fd4ef1d56faa401578fee2e），227題、題庫1–228列、說明1–34列；沒有115-MI題目。先前249題狀態已取消。
-- 115-MI專用22題另存repo外 `/Users/HHC/Documents/070326筆記/教學知識庫/04_outputs/platform_115-MI/115-MI_微免資訊圖表題庫.xlsx`；題庫1列標題＋22題，細菌2–12列（第一小時：細菌）、免疫13–23列（第二小時：免疫），課程代碼全部115-MI、次單元原教材標題。選項換位、答案代碼／Zuvio及其他內容沿已核可版本；說明分頁列兩份教材網址。
-- 完整check全過：前端140／Functions29、0fail／skipped，版本與兩端build成功。新檔已重新匯入與逐格／XML比對、渲染檢視，分離證據`docs/micro-immuno-review/bank-separation-verification.json`、check紀錄`bank-separation-check.txt`。
-- 先前看板＋微免教材＋名冊修正整合仍完整保留（基底a593796）；主程式、catalog、兩份正式HTML本次未改，未納入呼吸／血流未核可教材。歷史整合報告`docs/RELEASE_1.7.1_MICRO_IMMUNO_REPORT.md`之249題敘述已由本次分離更正取代。
-- 微免截圖只存本機，142張PNG已由amend移出版控並.gitignore；本機原檔仍在微免worktree。網站發布與課程Google Sheet題庫匯入是不同作業，115-MI只能用自己的專用題庫。
-- 本次未變更正式站；讀取時本機main／origin/main＝3f6d925（版本檔1.7.0），已含名冊換信箱修正；本次未push／部署。
-- 1.7.0 ①～④於10/6 Claude驗收通過；目前main已含此基底與名冊修正，上線請依上方release整合流程，不從舊功能分支直接部署。前端134／Functions26測試及兩端build通過；同步後會清除「全部重算」勾選。驗收 docs/PRACTICE_MODES_1.7.0_ACCEPTANCE.md。
-- 任務基底 feature/1.7.0-practice-modes＝e8805f8（先依交辦提交既有交接及兩份規格，訊息 docs: 交接更新 [Claude]）。Git 過期 index.lock 已確認無 Git 程序後清除。
-- 工作1分支 feature/respiratory-infographics：7份preview（各6節點／11題）與49張SVG、可拖曳氧解離曲線；未build、未登錄、Excel未動。教材實作依規格須等教師看畫面才commit，目前改動留本機。
-- 工作1B報告：/Users/HHC/Dropbox/耕莘/antigravity/072026 新的專案/05_review/Q3疑點研究_6題.md。Q3-28答案有爭議，其餘五題答案成立但需修解析；僅報告，未改Excel／卡片／進度，B未套入A。
-- 原子卡第四輪26張已 self_checked，QC 0 error／warn；報告位於上述外部專案05_review/midterm_cards_round4_report.md，待Claude獨立驗收；總數88 awaiting_teacher_review／41 self_checked／69 reviewed／6 blocked。right-left-main-bronchi已由教師更正核可為reviewed。
-- 工作2已完成：feature/1.7.1-completion-board＝ed08854，基底e8805f8；獨立工作目錄 /Users/HHC/Documents/ChatGPT/課程平台1.0/.worktrees/completion-board（乾淨）。版本1.7.1、前端140／Functions26、兩端build／版本檢查通過，報告為該worktree內 docs/COMPLETION_BOARD_1.7.1_ACCEPTANCE.md（含6張1280／390圖），Claude10/8複驗通過，未push／部署；須先整合最新main及微免再部署，原目錄仍為呼吸分支1.7.0。
-
-- **Claude 複驗通過（2026-10-08）**：呼吸 7 份 77 題仍與規格一致；提示／解析／預測回饋／12 句應用／重點拆分／狀態名稱／stats 均已改；解剖圖（矢狀切面、右主支氣管、右肺斜裂、肺泡三細胞標註、曲線虛線對照、胸廓壓力位置）已正確。**下一步：教師看 `docs/respiratory-preview.html`**，核可後才 build＋Excel 第229列起77題＋登錄＋commit。完成度看板 1.7.1（ed08854）複驗通過，上線需先在新release worktree整合微免及最新main，再由教師執行`scripts/deploy.sh`（見上方待辦）。
-
-- 血流路徑動畫（2026-10-08 教師決定：一份教材四模式＝肺／體／胎兒／大腦；胎兒混合血紫色；含出生後閉鎖；先獨立；單元未定）：Codex 規格 `docs/BLOOD_FLOW_ROUTES_SPEC.md`。**階段 1 經 Claude 驗證通過**（35 句原文全核、解剖無誤、大腦第 4 步依表 11-2＋圖 11-17 核可、needs_review 已解除），教師抽查 4 張全核可（2026-10-08），已 reviewed（進度檔＋frontmatter）。**階段 2 已做至 preview＋shots，待 Claude 解剖／11題驗收與教師看畫面。** 視覺計畫 `docs/BLOOD_FLOW_ROUTES_VISUAL_PLAN.md`（worktree）為準；肺模式方案D與三小修教師已核可；依教師接續交辦，體／胎兒／大腦均已分次交preview，待整體圖面人工驗收。
-
-- 血流階段2：`.worktrees/blood-flow-routes`／`feature/blood-flow-routes`／HEAD e8805f8，未提交。教師 10/9 判定第三輪美感不足，Claude 畫四模式樣張 v2（`docs/blood-flow-sample/blood-flow-sample-v2.html`；胎盤左側、臍動脈修圓），Codex 依樣張重畫完成（報告 `docs/BLOOD_FLOW_ROUTES_V2_REPORT.md`）。**Claude 10/9 驗收通過**：畫面與樣張逐步一致（僅三個心腔座標微調）；content.json／presentation.mjs／materials-build.mjs SHA 不變；Claude 以 Noto Sans CJK TC 補跑 1280／390 共 66 狀態：文字不壓當步血管、間距、越界、手機字 ≥12.5px、pageerror、水平溢位全過（僅肺第6步肺靜脈在心臟邊緣貼近心房名，屬可接受）。**下一步：教師看畫面**（`public/materials/blood-flow-routes-v1/index.html` 或截圖集 `docs/blood-flow-routes-preview.html`），核可後才 build＋Excel 新增 6 先備＋5 情境題＋登錄＋commit。
-
-## 部署方式（教師執行）
-```sh
-zsh -ilc 'source ~/.nvm/nvm.sh && nvm use 22.23.2 >/dev/null && bash ~/Documents/ChatGPT/課程平台1.0/.worktrees/release-1.7.1-micro-immuno/scripts/deploy.sh'
-```
-- deploy.sh：npm run check → 備份 → Functions → 快轉push main；Firebase帳號 hhchang@ctcn.edu.tw。
-- VERSION／兩端package與lock／shared/version.ts／apps-script/version.gs／public/version.json／三份文件版本行須同步（version:sync／version:check）。
-- 既有本機資料不要納入：public/materials/coagulation-v1、html五份RTF、html/心電圖與心律不整解析.html；exclude現況保留。
+## 目前狀態（2026-10-12）
+- 教師授權今天獨立部署。分支 deploy/115-MI-site，目錄 .worktrees/site-115-MI；基底 a593796，合入題庫分離54a1d3c與既有mi/main，保留兩邊歷史。
+- mi-bd885 可見、Blaze、Firestore Native asia-east1、Sheets API enabled；Google登入及Pages網域設定存在。教師設定的四個GitHub variables已比對符合，Pages來源為Actions。
+- 兩份微免與三份CHP沿用核可內容；僅替換兩份SDK網址為MI站。AP2公開教材移除，catalog僅兩筆MI；SDK及教材判定不改。README保留作materials:sync目錄資料。
+- npm ci、functions ci、materials:sync、完整check成功：前端132／Functions29，0fail／skipped，版本1.7.1與兩端build通過。AP2公開檔測試調整逐條列於部署文件。
+- SHEETS_SYNC_KEY新版本2已設定且sheetsPublish使用；40個函式全部ACTIVE（asia-east1），Firestore規則與索引部署成功。服務帳戶：62416037569-compute@developer.gserviceaccount.com。
+- 後端成功後才推mi/main；前端發布與正式網址檢查結果見 docs/DEPLOY_115-MI_REPORT.md。
+- .env.local忽略不提交；.firebaserc default、pages.yml、SDK、AP2 deploy.sh未改；AP2題庫與e8805f8逐位元相同227題；115-MI題庫在repo外獨立檔。原目錄與其他worktree未改。
 
 ## 固定決策（精簡版；細節見各 docs）
 
+
 **資料與架構**
-1. 學生入口 GitHub Pages，資料 Firebase（專案 `ap2-7ed91`，asia-east1）；舊題庫系統資料完全隔離。
+1. 學生入口 GitHub Pages，資料 Firebase（各課程獨立專案，asia-east1）；舊題庫系統資料完全隔離。
 2. 成績一律由後端以私有答案表重批，前端分數不採信。完整作答才更新最高分；錯題複習、抽題、綜合練習不更新最高分與完成度。
 3. 題庫改版時錯題依題目 ID 延續；正解文字／選項數／題型改變或刪除的題目重置；教師可勾選全部重新計算；同步時讀舊版題庫比對（僅教師操作）；複習考與部署前的同步不延續。已發布快照不可變、最高分跨版沿用。所有錯題經 effectiveWrong；rm保留n，再錯累加；同日ok，Asia/Taipei隔日答對才移除。
 4. 代碼（課程／單元／班級）由教師自訂，可中文、英數、`-`、`_`，不可空白標點，≤50 字，建立後不改。題目 ID 等仍限英數。
@@ -75,16 +54,9 @@ zsh -ilc 'source ~/.nvm/nvm.sh && nvm use 22.23.2 >/dev/null && bash ~/Documents
 24. **藥物與疾病（教師決定 2026-10-07）：Q1–Q8 任何題目內容和藥物或疾病有關，一律納入「國考延伸」補充教材**（9/25「正式教材不放疾病藥物」的配套）；出處第一順位指定課本、第二順位其他課本並逐句註明。規格見 Project 文件「期中考國考延伸補充教材規格」第 5 節。
 25. **課程題庫分離（教師2026-10-11更正）**：115-MI 與 115-2-AP2 共用主程式，課程內容與題庫完全分開；任何課程的題目只寫入該課程自己的題庫檔，不得寫入 html/資訊圖表題庫_上傳用.xlsx（該檔僅屬 115-2-AP2）。
 
-## 待辦
-- 115-MI題庫分離修正已提交fix/separate-115-MI-bank；目前不部署，下次正式部署需包含此修正。115-MI題目僅使用repo外專用題庫，教師自行匯入其課程Google Sheet。
-- 血流：v2 已由 Claude 驗收通過，待教師看畫面；核可後依固定決策 22 正式 build、Excel 末列新增 11 題、登錄、commit。
-- 工作1：最終兩尺寸截圖／作答驗證已通過（14頁全流程，check134／26），預覽見docs/RESPIRATORY_INFOGRAPHICS_PREVIEW.md，10/8Claude複驗通過，待教師看畫面；核可前不build、登錄、寫Excel或commit教材。核可後Excel僅第229列起增77題，既有列不可改。
-- 工作1B：Claude已核對報告引句，待教師裁定六題與資訊圖表修訂；教師原決定Q3／Q4先不上平台仍有效。
-- 工作2：三項修正已提交ed08854，check140／26及Claude複驗通過；教師決定部署。
-- 第四輪26張原子卡待Claude獨立驗；國考延伸兩份教材與補建卡另開單，這次不做。
-- 1.7.0部署後教師實測：改一題錯字同步顯示保留／重置0題；閃卡不改最高分；完整測驗完成度、逾期與首頁定位。
-- 題庫Excel第108–228列待教師貼Sheet並同步；後台依 docs/LIVE_INFOGRAPHICS_CLASSIFICATION.md 建活動；血液氣體運送／止血機制活動改連v2。
-- feature/heart-structure-v2（9/25驗收）及feature/material-kit（待驗）未部署；部署前合併最新main。其他已完成階段細節查DEVELOPMENT_LOG。
-- 快照INTERNAL：教師10/6決定本輪不修。下輪先查正式log；已本機重現forClass無條件research:undefined造成Firestore拒絕，需省略欄位＋真實序列化回歸測試，保留進度。
-- 未排程：passedAt首次達標後端行為測試、題目作廢重算、diagnostics.summary索引排除、firebase-functions升級、App拆檔、真實學生端到端驗收。
-- 研究前後測／等值遷移題及Google Sheet名冊、單元欄由教師提供。
+26. **115-MI 獨立部署**：網站 `albertchang1008-alt/115-MI`、Firebase `mi-bd885`；115-2-AP2 維持 `115-1-AP2`／`ap2-7ed91`。兩邊共用程式碼，但部署、資料、教材、題庫各自分開；部署前必確認目標專案與 remote。
+
+## 下一步（停在教師登入）
+- 教師在115-MI新站以Google登入一次，提供UID；教師自行完成gcloud ADC登入後，再設定mi-bd885教師claim。尚未代登入／設定claim／匯入題庫名冊。
+- 教師將115-MI Google Sheet分享給上方服務帳戶，再於MI後台匯入該課自己的題庫與名冊。
+- Apps Script若使用SHEETS_SYNC_KEY，採相同Secret Manager版本；值不得寫入聊天或repo。

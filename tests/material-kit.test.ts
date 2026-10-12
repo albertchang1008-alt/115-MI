@@ -46,12 +46,6 @@ test('ECG 基礎教材維持六節點、十一題與非診斷內容界線', () =
   assert.ok(ecg.nodes.some((node: any) => node.id === 'ecg-basics-node-06'));
   assert.ok(ecg.credits.some((credit: string) => credit.includes('審核')));
 });
-test('心臟構造樣板是單檔、含 SDK、無 CDN 與固定教材 ID', () => {
-  const html = fs.readFileSync('public/materials/heart-structure-v1/index.html', 'utf8');
-  assert.match(html, /course-learning\.js/); assert.doesNotMatch(html, /cdn\./i); assert.doesNotMatch(html, /[🫀📊📝]/);
-  for (const item of [...content.nodes, ...content.foundation, ...content.cases]) assert.match(html, new RegExp(item.id));
-});
-
 test('標示題型驗證與元件庫洗牌', () => {
   const label = ecg.foundation.find((q: any) => q.type === 'label');
   assert.throws(() => validateMaterialContent({ ...ecg, foundation: ecg.foundation.map((q: any) => q === label ? { ...q, target: 'XX' } : q) }), /標示題/);

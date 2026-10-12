@@ -2,18 +2,21 @@
 目前版本：1.7.1
 
 ## 給接手的 AI agent
-- 開工讀本檔、確認分支；commit 結尾 [Codex]，不略過測試。
-- 本 worktree 是 115-MI，禁止向 origin（AP2）push 或部署 ap2-7ed91；不得執行 AP2 scripts/deploy.sh。
-- 每段工作更新本檔與 DEVELOPMENT_LOG.md；部署流程見 docs/DEPLOY_115-MI.md。
+- 本 worktree=.worktrees/site-115-MI，分支 codex/115-mi-assessments；commit 結尾 [Codex]，完成任何工作更新handoff與DEVELOPMENT_LOG。
+- MI remote=mi（albertchang1008-alt/115-MI）、Firebase=mi-bd885。禁止push origin/AP2或執行AP2 deploy.sh；每條firebase指令必帶--project mi-bd885。
+- 主目錄feature/respiratory-infographics及其他worktree有其他工作，不動。
 
 ## 目前狀態（2026-10-12）
-- 教師授權今天獨立部署。分支 deploy/115-MI-site，目錄 .worktrees/site-115-MI；基底 a593796，合入題庫分離54a1d3c與既有mi/main，保留兩邊歷史。
-- mi-bd885 可見、Blaze、Firestore Native asia-east1、Sheets API enabled；Google登入及Pages網域設定存在。教師設定的四個GitHub variables已比對符合，Pages來源為Actions。
-- 兩份微免與三份CHP沿用核可內容；僅替換兩份SDK網址為MI站。AP2公開教材移除，catalog僅兩筆MI；SDK及教材判定不改。README保留作materials:sync目錄資料。
-- npm ci、functions ci、materials:sync、完整check成功：前端132／Functions29，0fail／skipped，版本1.7.1與兩端build通過。AP2公開檔測試調整逐條列於部署文件。
-- SHEETS_SYNC_KEY新版本2已設定且sheetsPublish使用；40個函式全部ACTIVE（asia-east1），Firestore規則與索引部署成功。服務帳戶：62416037569-compute@developer.gserviceaccount.com。
-- 已一般push mi/main（網站合併a2d2a24、正式紀錄d9895be），Actions build/deploy全部success；六個正式網址200，登入畫面Google按鈕可用、v1.7.1、0 pageerror；正式JS設定確認mi-bd885。檢查證據與網址見docs/DEPLOY_115-MI_REPORT.md。
-- .env.local忽略不提交；.firebaserc default、pages.yml、SDK、AP2 deploy.sh未改；AP2題庫與e8805f8逐位元相同227題；115-MI題庫在repo外獨立檔。原目錄與其他worktree未改。
+- 教師授權「不分組講義、正式前後測實作上線、完整題庫同步Google Sheet」，並指定同Sheet「班級名冊」。本機從8753865建立專用分支；版本仍1.7.1。提交/上線SHA以git log及後方最新驗證為準。
+- 正式測驗前／後各7題、8分鐘、一次交卷，答案僅後端私有；儲存版本防雙視窗覆蓋、續原場次、伺服器逾時重批、重送交卷不重複計分。後測全結束後教師才公布成績／解析；不寫一般練習最高分、錯題或完成度。
+- 新增「正式測驗」教師入口（凍結試卷、班級/時間、開放/結束/公布、私有預覽、補考理由留痕、作答報表與配對CSV）。學生從課程首頁「正式前後測」進入；教師前台預覽不寫正式成績。
+- mi-bd885 functions+firestore部署成功，新增8個函式均ACTIVE，合計48；逾時索引READY，未登入測驗API回401。SHEETS_SYNC_KEY版本2、執行SA 62416037569-compute@developer.gserviceaccount.com不變。
+- Google Sheet 115-MI，ID 1Nr-BT1Dz5PyKVOf2Y3W1TJXHw48Pgwn4CuxCz9YeWC8，學校Drive帳號已連接可用。題庫分頁115-1-MI-國考精準對焦：原22題第2–23列保留，新增61題第24–84列，總83；逐欄核對0題目差異。僅既有A課程碼對齊分頁、D次單元去逗號、教材連結改MI；F原TRUE表示法保留。GoogleSheet既有格式保留，追加列無舊AP2超連結。
+- 雲端私有前測7＋後測7來源就緒；一般題庫5分類69題已同步並發布，14題不進一般銀行，getBank/單題與綜合交卷防繞過。正式場次尚未建立／開放，教師自行選班與上課時間。
+- 教師指定班級名冊分頁已同步：54人全啟用（N55134、N55220），enrollments54筆；既有護551/護552班級設定保留，實際施測選N551/N552。名冊個資只在Sheet、MI雲端與必要本機暫存，不寫repo。
+- repo外platform_115-MI講義/定稿HTML改個人活動：教師76頁、學生30頁，學生版無8個答案/課後公開頁及備註；海報PNG/PDF及QR指MI。38頁越界0，備註頁腳重疊0，頁數/嵌入字型與PDF渲染核對通過。檔案見外部slides/output/REPORT.md、STATUS.md。
+- 完整check：前端132＋Functions35（新增6個正式測驗行為測試），0失敗/跳過；兩端build與函式入口42項通過。UI1280/390儲存、交卷、延後答案、教師預覽0越界/頁面例外，詳docs/115-MI_ASSESSMENTS_DELIVERY.md。
+- .env.local不提交；.firebaserc default、pages.yml、SDK、AP2部署及題庫不改。原22題Excel與完整83題Excel未修改，原始deck-source保留。外部講義不上傳網站。
 
 ## 固定決策（精簡版；細節見各 docs）
 
@@ -56,10 +59,12 @@
 
 26. **115-MI 獨立部署**：網站 `albertchang1008-alt/115-MI`、Firebase `mi-bd885`；115-2-AP2 維持 `115-1-AP2`／`ap2-7ed91`。兩邊共用程式碼，但部署、資料、教材、題庫各自分開；部署前必確認目標專案與 remote。
 
-## 現況與下一步（教師權限已設定，2026-10-12）
-- 教師已提供UID並完成gcloud ADC登入；已執行scripts/set-teacher.cjs，明確project=mi-bd885，保留既有claims新增teacher:true。讀回確認UID一致、teacher:true、disabled:false；沒有操作AP2。
-- 教師確認115-MI Google Sheet已分享給MI服務帳戶；實際讀寫與題庫／名冊匯入尚未代操作。
-- 請教師在新站登出再登入，更新登入token並進入教師後台，再建立／匯入115-MI課程自己的題庫與名冊。
-- gcloud官方588.0.0暫存於/tmp/115-MI-gcloud，SHA256與官方相同；憑證只在本機，不納入repo。這次僅設定Auth claim與更新紀錄，未再推送或部署網站。
-- 網站正式版本d9895be，Actions 38197847642成功；本機後續交接提交以git log -1為準。
-- Apps Script若使用SHEETS_SYNC_KEY，採相同Secret Manager版本；值不得寫入聊天或repo。
+27. **正式前後測（教師2026-10-12指示）**：屬測驗，不使用一般練習模式；專用測驗流程規畫為前／後各7題、一次正式交卷、後端限時／私有試卷、延後公布答案、獨立成績；規格docs/115-MI_EXAM_MODE_PLAN.md，已實作於115-MI；8分鐘為本次採用預設。
+
+
+28. **115-MI個別活動（教師2026-10-12）**：不分組、不安排鄰座討論；講義、投影片備註及海報採個人探索／作答，教師全班統整。
+
+## 下一步
+- 等GitHub Actions build/deploy通過後補記SHA與正式網址驗證；只推mi/main，不force。
+- 教師重新整理/登入MI後台「正式測驗」，選N551／N552與時間建立前／後測；開前測→結束前測→開後測→結束後測→公布結果。尚未開放任何學生場次。
+- Sheet未來同步仍由平台同步鈕讀來源；名冊不自動刪除既有學生、試卷建立後來源更新不覆寫已凍結內容。需更正正式試卷答案時另核定處理，不覆寫原成績。

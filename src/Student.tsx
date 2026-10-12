@@ -1,3 +1,4 @@
+import { StudentAssessments } from './Assessments';
 import { MixedScopeCard, MixedPractice } from './MixedPractice';
 import { selectPracticeRows } from '../shared/practice';
 import { Flashcards, UnitWrongPractice } from './PracticeModes';
@@ -366,6 +367,7 @@ export default function Student({
           </button>
         </div>
       )}
+      {!unit && <StudentAssessments api={api} course={course} />}
       {course.studentNotice && <div className="notice">{course.studentNotice}</div>}
       {!unit ? (
         <>

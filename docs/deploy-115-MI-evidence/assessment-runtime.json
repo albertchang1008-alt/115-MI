@@ -1,0 +1,72 @@
+{
+  "project": "mi-bd885",
+  "functions": 48,
+  "assessmentFunctions": [
+    {
+      "name": "expireAssessments",
+      "state": "ACTIVE",
+      "account": "62416037569-compute@developer.gserviceaccount.com"
+    },
+    {
+      "name": "assessmentReport",
+      "state": "ACTIVE",
+      "account": "62416037569-compute@developer.gserviceaccount.com"
+    },
+    {
+      "name": "getAssessments",
+      "state": "ACTIVE",
+      "account": "62416037569-compute@developer.gserviceaccount.com"
+    },
+    {
+      "name": "controlAssessment",
+      "state": "ACTIVE",
+      "account": "62416037569-compute@developer.gserviceaccount.com"
+    },
+    {
+      "name": "previewAssessment",
+      "state": "ACTIVE",
+      "account": "62416037569-compute@developer.gserviceaccount.com"
+    },
+    {
+      "name": "startAssessment",
+      "state": "ACTIVE",
+      "account": "62416037569-compute@developer.gserviceaccount.com"
+    },
+    {
+      "name": "prepareAssessment",
+      "state": "ACTIVE",
+      "account": "62416037569-compute@developer.gserviceaccount.com"
+    },
+    {
+      "name": "saveAssessment",
+      "state": "ACTIVE",
+      "account": "62416037569-compute@developer.gserviceaccount.com"
+    }
+  ],
+  "unauthenticated": [
+    {
+      "name": "getAssessments",
+      "status": 401,
+      "guard": "UNAUTHENTICATED"
+    },
+    {
+      "name": "startAssessment",
+      "status": 401,
+      "guard": "UNAUTHENTICATED"
+    },
+    {
+      "name": "saveAssessment",
+      "status": 401,
+      "guard": "UNAUTHENTICATED"
+    }
+  ],
+  "indexStates": [
+    "READY",
+    "READY",
+    "READY",
+    "READY",
+    "READY",
+    "READY",
+    "READY"
+  ]
+}

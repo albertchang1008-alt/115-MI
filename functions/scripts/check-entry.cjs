@@ -4,6 +4,7 @@ process.env.FIREBASE_CONFIG = JSON.stringify({
 });
 const handlers = require('../lib/functions/src/index.js');
 const expected = [
+  'getAssessments','prepareAssessment','controlAssessment','startAssessment','saveAssessment','previewAssessment','assessmentReport','expireAssessments',
   'bootstrap',
   'saveCourse',
   'publishCourse',

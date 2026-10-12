@@ -1,3 +1,4 @@
+import { TeacherAssessments } from './Assessments';
 import CompletionBoard from './CompletionBoard';
 import { carryMessage, CarryResult } from '../shared/wrongCarry';
 import ChapterMergeDialog from './ChapterMergeDialog';
@@ -9,6 +10,7 @@ import ProgressBoard from './ProgressBoard';
 import { useEffect, useRef, useState } from 'react';
 import ChapterUnitPicker, { useChapterUnitSelection } from './ChapterUnitPicker';
 import {
+  ListChecks,
   LayoutDashboard,
   BookOpen,
   Users,
@@ -82,6 +84,7 @@ import Student from './Student';
 import ThemePicker from './ThemePicker';
 import FontSizePicker from './FontSizePicker';
 const tabs = [
+  ['assessments', '正式測驗', ListChecks],
   ['overview', '教學總覽', LayoutDashboard],
   ['courses', '課程與教材', BookOpen],
   ['bank', '題庫管理', Layers],
@@ -614,6 +617,8 @@ export default function App() {
             <ResearchEvidence key={course.id} course={course} api={api} notify={notify} />
           ) : !course ? (
             <Empty title="建立第一門課程" detail="請從「課程與教材」建立課程，再匯入名冊及題庫。" />
+          ) : tab === 'assessments' ? (
+            <TeacherAssessments key={course.id} api={api} course={course} notify={notify} />
           ) : tab === 'bank' ? (
             <Bank key={course.id} course={course} api={api} notify={notify} onSynced={async () => {
               const data = await api.call('bootstrap');

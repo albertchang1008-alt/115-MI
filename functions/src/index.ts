@@ -1,3 +1,4 @@
+import { createAssessmentHandlers, assertPracticeBank, storeAssessmentSources } from './assessments';
 import { appendWrongCarry, wrongCarryDrop, CarryResult } from '../../shared/wrongCarry';
 import { parseRosterSheet, parseBankSheet, looksLikeBankSheet } from '../../shared/sheets';
 import { emptyLearning, reduceLearning, LearningEvent } from '../../shared/learning';
@@ -653,7 +654,9 @@ export const getBank = onCall(options, async (req) => {
   const docs = await Promise.all(
     manifest.data()!.chunks.map((ch: string) => ref.collection('chunks').doc(ch).get()),
   );
-  return { questions: docs.flatMap((d) => d.data()?.questions || []) };
+  const questions = docs.flatMap((d) => d.data()?.questions || []);
+  if (!p.teacher) assertPracticeBank(c, req.data.unitId, questions.map((q: Question) => q.id));
+  return { questions };
 });
 export const getProgress = onCall(options, async (req) => {
   const { p, c } = await access(req, req.data.courseId);
@@ -684,6 +687,7 @@ export const submitAttempt = onCall(options, async (req) => {
   const bankRef = db.doc(`banks/${a.courseId}_${a.unitId}_${a.version}`);
   const bank = await bankRef.get();
   if (!bank.exists) fail('題庫版本不存在');
+  assertPracticeBank(c, a.unitId, Object.keys(bank.data()!.questionOptions || {}));
   if (
     !['quiz', 'flashcard', 'review'].includes(a.mode) ||
     !Array.isArray(a.answers) ||
@@ -782,6 +786,7 @@ export const submitMixedAttempts = onCall(options, async (req) => {
     const bankRef = db.doc(`banks/${courseId}_${input.unitId}_${input.version}`), bank = await bankRef.get();
     if (!bank.exists || !Number.isFinite(input.duration) || input.duration < 0 || input.answers.length > MAX_BANK_QUESTIONS) fail('作答格式錯誤');
     const options = bank.data()!.questionOptions || {};
+    assertPracticeBank(c, input.unitId, Object.keys(options));
     if (new Set(input.answers.map((x) => x.questionId)).size !== input.answers.length) fail('作答格式錯誤');
     for (const answer of input.answers) if (!options[answer.questionId] || typeof answer.selected !== 'string' || !options[answer.questionId].includes(answer.selected)) fail('題目或選項不屬於本次題庫');
     const grading = await bankRef.collection('grading').doc('answers').get();
@@ -1270,6 +1275,8 @@ export async function syncBankTabFromSheet(rows: unknown[][], tabTitle: string, 
   }
   for (const [courseId, units] of groups) {
     const ref = db.doc(`courses/${courseId}`);
+    const assessmentCourse = (await ref.get()).data();
+    if (assessmentCourse?.teacherIds?.includes(uid)) await storeAssessmentSources(db, courseId, assessmentCourse, units);
     for (const [unitId, { group, questions }] of units) {
       try {
         const course = await ref.get();
@@ -1496,3 +1503,5 @@ export const getLearningDiagnostics = onCall(options, async (req) => {
   const snap = await (after ? base.startAfter(after) : base).limit(50).get();
   return { rows: snap.docs.map((d) => ({ ...d.data(), id: d.id })), next: snap.size === 50 ? snap.docs.at(-1)!.id : null };
 });
+
+export const { getAssessments, prepareAssessment, controlAssessment, startAssessment, saveAssessment, previewAssessment, assessmentReport, expireAssessments } = createAssessmentHandlers(db, access, options);

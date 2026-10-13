@@ -8,6 +8,9 @@ import {
   Responses,
   interactions,
   validateResponses,
+  interactionSeconds,
+  interactionExpired,
+  interactionTimeLabel,
 } from '../shared/classroom';
 /** Serial polling: never overlap requests or apply a late response after unmount/course change. */
 function usePoll(
@@ -32,17 +35,33 @@ function usePoll(
     };
   }, dependencies);
 }
+/** Anchor to server time and a monotonic local clock; device wall-clock changes do not affect countdown. */
+export function useInteractionClock(serverNow?: number) {
+  const anchor = useRef({ server: serverNow ?? Date.now(), local: performance.now() });
+  const [now, setNow] = useState(anchor.current.server);
+  useEffect(() => {
+    if (serverNow !== undefined) anchor.current = { server: serverNow, local: performance.now() };
+    const tick = () => setNow(anchor.current.server + performance.now() - anchor.current.local);
+    tick();
+    const timer = setInterval(tick, 250);
+    return () => clearInterval(timer);
+  }, [serverNow]);
+  return now;
+}
 type StudentRound = Omit<PollRound, 'counts' | 'total'>;
 type StudentState = {
   round: StudentRound | null;
   submitted?: boolean;
   answers?: Responses | null;
   results?: PollRound;
+  serverNow?: number;
 };
 export function StudentInteraction({ api, course }: { api: API; course: Course }) {
   const [state, setState] = useState<StudentState>({ round: null }),
     [expanded, setExpanded] = useState(false),
     [failure, setFailure] = useState('');
+  const now = useInteractionClock(state.serverNow);
+  const expired = !!state.round && interactionExpired(state.round, now);
   useEffect(() => {
     setState({ round: null });
     setExpanded(false);
@@ -90,14 +109,35 @@ export function StudentInteraction({ api, course }: { api: API; course: Course }
             {state.round.status === 'open'
               ? state.submitted
                 ? '已送出，作答已鎖定'
-                : '開放作答中'
+                : expired
+                  ? '時間到，等待老師公布結果'
+                  : '開放作答中'
               : '已結束'}
           </p>
+          {state.round.status === 'open' && (
+            <p
+              className={
+                'interaction-timer' +
+                (expired
+                  ? ' expired'
+                  : interactionSeconds(state.round, now) <= 10 &&
+                      state.round.deadlineAt !== undefined
+                    ? ' urgent'
+                    : '')
+              }
+              role="timer"
+              aria-label="互動時間"
+            >
+              {state.round.deadlineAt === undefined ? '已開放 ' : '剩餘 '}
+              {interactionTimeLabel(interactionSeconds(state.round, now))}
+            </p>
+          )}
           {expanded && (
             <InteractionForm
               key={state.round.id}
               round={state.round}
               api={api}
+              expired={expired}
               courseId={course.id}
               submitted={!!state.submitted}
               saved={state.answers || undefined}
@@ -123,18 +163,20 @@ export function InteractionForm({
   submitted,
   saved,
   onSaved,
+  expired = false,
 }: {
   round: StudentRound;
   api: API;
   courseId: string;
   submitted: boolean;
+  expired?: boolean;
   saved?: Responses;
   onSaved: (answers: Responses) => void;
 }) {
   const [answers, setAnswers] = useState<Responses>({}),
     [busy, setBusy] = useState(false),
     [failure, setFailure] = useState('');
-  const locked = submitted || round.status === 'closed' || busy;
+  const locked = submitted || round.status === 'closed' || expired || busy;
   const values = submitted ? saved || {} : answers;
   const set = (key: string, value: string | string[]) =>
     setAnswers((old) => ({ ...old, [key]: value }));
@@ -151,7 +193,8 @@ export function InteractionForm({
       if (!r.submitted) throw Error('尚未收到送出確認，請重試');
       onSaved(r.answers);
     } catch (e) {
-      setFailure((e as Error).message + '；未確認成功時，請重試送出。');
+      const message = (e as Error).message;
+      setFailure(message.includes('時間到') ? message : message + '；未確認成功時，請重試送出。');
     } finally {
       setBusy(false);
     }
@@ -208,6 +251,8 @@ export function InteractionForm({
       {failure && <p role="alert">{failure}</p>}
       {submitted ? (
         <p role="status">已送出，作答已鎖定。等待教師統整。</p>
+      ) : expired && round.status === 'open' ? (
+        <p role="status">時間到，等待老師公布結果</p>
       ) : round.status === 'closed' ? (
         <p>教師已結束作答，未送出的內容不列入統計。</p>
       ) : (
@@ -218,7 +263,7 @@ export function InteractionForm({
     </div>
   );
 }
-export function PollResults({ round }: { round: PollRound }) {
+export function PollResults({ round, expired = false }: { round: PollRound; expired?: boolean }) {
   return (
     <div className="poll-results">
       <div className="poll-results-head">
@@ -227,7 +272,8 @@ export function PollResults({ round }: { round: PollRound }) {
         </h2>
         <p className="poll-total">
           已回覆 <strong>{round.total}</strong> 人 ·{' '}
-          {round.status === 'open' ? '即時收票中' : '已結束'} · 每人每輪一份作答
+          {round.status === 'open' ? (expired ? '時間到，等待統整' : '即時收票中') : '已結束'} ·
+          每人每輪一份作答
         </p>
       </div>
       <div className="poll-stat-grid">
@@ -263,6 +309,12 @@ export function PollResults({ round }: { round: PollRound }) {
     </div>
   );
 }
+type TeacherState = {
+  round: PollRound | null;
+  activeRound: PollRound | null;
+  serverNow?: number;
+  rounds?: PollRound[];
+};
 export function TeacherInteraction({
   api,
   course,
@@ -276,23 +328,35 @@ export function TeacherInteraction({
   black: boolean;
   privateRecords?: boolean;
 }) {
-  const def = interactions.find((d) => d.slideId === slideId),
-    [round, setRound] = useState<PollRound | null>(null),
-    [history, setHistory] = useState<PollRound[]>([]),
-    [selected, setSelected] = useState(''),
-    [classes, setClasses] = useState<string[]>(
-      course.classIds.filter((id) => id === 'N551' || id === 'N552'),
-    ),
-    [show, setShow] = useState(false),
-    [failure, setFailure] = useState(''),
-    [busy, setBusy] = useState(false),
-    [records, setRecords] = useState<any[] | null>(null);
+  const def = interactions.find((d) => d.slideId === slideId);
+  const [state, setState] = useState<TeacherState>({ round: null, activeRound: null });
+  const [history, setHistory] = useState<PollRound[]>([]),
+    [selected, setSelected] = useState('');
+  const [classes, setClasses] = useState<string[]>(
+    course.classIds.filter((id) => id === 'N551' || id === 'N552'),
+  );
+  const [duration, setDuration] = useState(60),
+    [show, setShow] = useState(false);
+  const [failure, setFailure] = useState(''),
+    [busy, setBusy] = useState(false);
+  const [records, setRecords] = useState<any[] | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState<{
+    round: PollRound;
+    slideId: string;
+    classIds: string[];
+    durationSeconds: number;
+  } | null>(null);
   const epoch = useRef(0),
     controls = useRef<HTMLDivElement>(null),
     recordRequest = useRef(0),
     privateAllowed = useRef(privateRecords);
   privateAllowed.current = privateRecords;
   const [footerHeight, setFooterHeight] = useState(220);
+  const now = useInteractionClock(state.serverNow);
+  const { round, activeRound } = state;
+  const pageRound = round?.slideId === slideId ? round : null;
+  const pageOpen = activeRound?.slideId === slideId;
+  const expired = !!activeRound && interactionExpired(activeRound, now);
   useEffect(() => {
     const root = controls.current,
       playback = root?.parentElement?.querySelector('.teaching-playback');
@@ -312,7 +376,14 @@ export function TeacherInteraction({
     setRecords(null);
   }, [privateRecords, round?.id, api, course.id]);
   useEffect(() => {
-    setRound(null);
+    epoch.current++;
+    setSelected('');
+    setShow(false);
+    setConfirmOpen(null);
+    setState((s) => ({ ...s, round: null }));
+  }, [slideId]);
+  useEffect(() => {
+    setState({ round: null, activeRound: null });
     setHistory([]);
     setSelected('');
     setShow(false);
@@ -322,50 +393,82 @@ export function TeacherInteraction({
       if (api.preview || course.id !== MI_CLASSROOM_COURSE) return;
       const version = epoch.current;
       try {
-        const r = await api.call<{ round: PollRound | null; rounds?: PollRound[] }>(
-          'classroomInteractionReport',
-          { courseId: course.id, ...(selected ? { roundId: selected } : {}) },
-        );
+        const r = await api.call<TeacherState>('classroomInteractionReport', {
+          courseId: course.id,
+          slideId,
+          ...(selected ? { roundId: selected } : {}),
+        });
         if (alive() && version === epoch.current) {
-          setRound(r.round);
-          if (r.rounds) setHistory(r.rounds);
+          setState(r);
           setFailure('');
         }
       } catch {
-        if (alive()) setFailure('連線中斷，正在重新連線…');
+        if (alive() && version === epoch.current) setFailure('連線中斷，正在重新連線…');
       }
     },
-    [api, course.id, selected],
+    [api, course.id, slideId, selected],
     2000,
   );
-  async function action(action: string) {
+  async function action(action: string, target?: PollRound, replacement?: typeof confirmOpen) {
     if (busy) return;
     epoch.current++;
     setBusy(true);
     setFailure('');
     try {
-      const r = await api.call<{ round: PollRound }>('controlClassroomInteraction', {
-        courseId: course.id,
-        action,
-        slideId,
-        classIds: classes,
-        roundId: round?.id,
-      });
-      setRound(r.round);
-      setSelected(r.round.id);
-      if (action === 'open') setShow(true);
+      const r = await api.call<{ round: PollRound; serverNow?: number }>(
+        'controlClassroomInteraction',
+        {
+          courseId: course.id,
+          action,
+          slideId: replacement?.slideId || slideId,
+          classIds: replacement?.classIds || classes,
+          durationSeconds: replacement?.durationSeconds ?? duration,
+          roundId: target?.id,
+          ...(replacement ? { replaceRoundId: replacement.round.id } : {}),
+        },
+      );
+      setState((old) => ({
+        ...old,
+        serverNow: r.serverNow,
+        round: r.round.slideId === slideId ? r.round : old.round,
+        activeRound:
+          r.round.status === 'open'
+            ? r.round
+            : old.activeRound?.id === r.round.id
+              ? null
+              : old.activeRound,
+      }));
+      setSelected('');
+      setConfirmOpen(null);
+      if (action === 'open') setShow(false);
+      return true;
     } catch (e) {
       setFailure((e as Error).message);
+      setConfirmOpen(null);
+      return false;
     } finally {
       setBusy(false);
     }
+  }
+  function open() {
+    if (activeRound) {
+      if (activeRound.slideId !== slideId)
+        setConfirmOpen({
+          round: activeRound,
+          slideId,
+          classIds: [...classes],
+          durationSeconds: duration,
+        });
+      return;
+    }
+    void action('open');
   }
   async function loadRecords() {
     const version = ++recordRequest.current;
     try {
       const r = await api.call<{ rows: any[] }>('classroomInteractionRecords', {
         courseId: course.id,
-        roundId: round?.id,
+        roundId: pageRound?.id,
       });
       if (privateAllowed.current && version === recordRequest.current) setRecords(r.rows);
     } catch (e) {
@@ -374,11 +477,12 @@ export function TeacherInteraction({
   }
   async function refreshHistory() {
     try {
-      const r = await api.call<{ rounds: PollRound[] }>('classroomInteractionReport', {
+      const r = await api.call<TeacherState>('classroomInteractionReport', {
         courseId: course.id,
+        slideId,
         history: true,
       });
-      setHistory(r.rounds);
+      setHistory(r.rounds || []);
     } catch (e) {
       setFailure((e as Error).message);
     }
@@ -386,80 +490,159 @@ export function TeacherInteraction({
   if (course.id !== MI_CLASSROOM_COURSE || api.preview) return null;
   return (
     <div className="teacher-interaction" ref={controls}>
-      <div className="interaction-control" aria-label="課堂互動控制">
-        <span>{def ? '互動：' + def.title : '本頁無互動題'}</span>
-        <details>
-          <summary>參與班級（{classes.length}）</summary>
-          {course.classIds.map((id) => (
-            <label key={id}>
-              <input
-                type="checkbox"
-                disabled={busy || round?.status === 'open'}
-                checked={classes.includes(id)}
-                onChange={(e) =>
-                  setClasses((old) =>
-                    e.target.checked ? [...old, id] : old.filter((x) => x !== id),
-                  )
-                }
-              />
-              {id}
-            </label>
-          ))}
-        </details>
-        <button
-          disabled={busy || !def || !classes.length || round?.status === 'open'}
-          onClick={() => void action('open')}
-        >
-          開放作答
-        </button>
-        <button disabled={busy || round?.status !== 'open'} onClick={() => void action('close')}>
-          結束作答
-        </button>
-        <button
-          disabled={
-            busy ||
-            !def ||
-            !classes.length ||
-            round?.status !== 'closed' ||
-            round.slideId !== slideId
+      {!black && (
+        <aside
+          className={
+            'classroom-statusbar ' + (!activeRound ? 'idle' : expired ? 'expired' : 'open')
           }
-          onClick={() => void action('open')}
+          aria-label="互動常駐狀態"
         >
-          再投一輪
-        </button>
-        <button disabled={!round} onClick={() => setShow((v) => !v)}>
-          {show ? '回投影片' : '顯示結果'}
-        </button>
-        {round && (
+          {activeRound ? (
+            <>
+              <span>
+                <strong>
+                  {expired ? '時間到 · ' : '開放中 · '}
+                  {activeRound.title} · 第{activeRound.number}輪
+                </strong>
+                <br />
+                已收 {activeRound.total}／{activeRound.eligibleCount ?? '—'} 人 ·{' '}
+                {activeRound.deadlineAt === undefined ? '已開放' : '剩餘'}{' '}
+                <span role="timer">
+                  {interactionTimeLabel(interactionSeconds(activeRound, now))}
+                </span>
+              </span>
+              <button disabled={busy} onClick={() => void action('close', activeRound)}>
+                結束作答
+              </button>
+              {activeRound.deadlineAt !== undefined && (
+                <button disabled={busy} onClick={() => void action('extend', activeRound)}>
+                  ＋30 秒
+                </button>
+              )}
+            </>
+          ) : (
+            <span>目前沒有開放的互動</span>
+          )}
+        </aside>
+      )}
+      {def && (
+        <div className="interaction-control" aria-label="本頁互動控制">
+          <strong>本頁互動：{def.title}</strong>
           <span>
-            第{round.number}輪 · 已回覆{round.total}人
-            {round.slideId !== slideId ? '（其他投影片的互動）' : ''}
+            {pageOpen ? '開放中' : pageRound ? `已結束 · 第${pageRound.number}輪` : '未開放'}
           </span>
-        )}
-        <details
-          onToggle={(e) => {
-            if (e.currentTarget.open) void refreshHistory();
-          }}
-        >
-          <summary>歷次結果</summary>
-          <select
-            aria-label="歷次互動"
-            value={selected}
-            onChange={(e) => {
-              setSelected(e.target.value);
-              setShow(true);
+          <details>
+            <summary>參與班級（{classes.length}）</summary>
+            {course.classIds.map((id) => (
+              <label key={id}>
+                <input
+                  type="checkbox"
+                  disabled={busy || pageOpen}
+                  checked={classes.includes(id)}
+                  onChange={(e) =>
+                    setClasses((old) =>
+                      e.target.checked ? [...old, id] : old.filter((x) => x !== id),
+                    )
+                  }
+                />
+                {id}
+              </label>
+            ))}
+          </details>
+          {!pageOpen && (
+            <>
+              <label>
+                倒數時間{' '}
+                <select
+                  aria-label="倒數時間"
+                  disabled={busy}
+                  value={duration}
+                  onChange={(e) => setDuration(Number(e.target.value))}
+                >
+                  {[
+                    ['0', '不限時'],
+                    ['30', '30 秒'],
+                    ['60', '60 秒'],
+                    ['90', '90 秒'],
+                    ['120', '2 分鐘'],
+                    ['180', '3 分鐘'],
+                  ].map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <button disabled={busy || !classes.length} onClick={open}>
+                {pageRound ? '再投一輪' : '開放作答'}
+              </button>
+            </>
+          )}
+          {pageRound && (
+            <button
+              onClick={() => {
+                if (activeRound?.id === pageRound.id && interactionExpired(activeRound, now))
+                  void action('close', activeRound).then((ok) => {
+                    if (ok) setShow(true);
+                  });
+                else setShow((v) => !v);
+              }}
+            >
+              {show ? '回投影片' : '顯示結果'}
+            </button>
+          )}
+          <details
+            onToggle={(e) => {
+              if (e.currentTarget.open) void refreshHistory();
             }}
           >
-            <option value="">最新互動</option>
-            {history.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.title} · 第{r.number}輪 · {r.total}人
-              </option>
-            ))}
-          </select>
-        </details>
-      </div>
-      {privateRecords && round && (
+            <summary>歷次結果</summary>
+            <select
+              aria-label="歷次互動"
+              value={selected}
+              onChange={(e) => {
+                epoch.current++;
+                setSelected(e.target.value);
+                setShow(true);
+              }}
+            >
+              <option value="">本頁最新互動</option>
+              {history
+                .filter((r) => r.slideId === slideId)
+                .map((r) => (
+                  <option key={r.id} value={r.id}>
+                    {r.title} · 第{r.number}輪 · {r.total}人
+                  </option>
+                ))}
+            </select>
+          </details>
+        </div>
+      )}
+      {confirmOpen && !black && (
+        <div
+          className="interaction-confirm"
+          role="dialog"
+          aria-modal="true"
+          aria-label="切換本頁互動"
+        >
+          <p>
+            「{confirmOpen.round.title}」仍在開放中（已收{' '}
+            {activeRound?.id === confirmOpen.round.id ? activeRound.total : confirmOpen.round.total}{' '}
+            人）。要結束它並開放本頁嗎？
+          </p>
+          <button
+            disabled={busy}
+            className="primary"
+            onClick={() => void action('open', undefined, confirmOpen)}
+          >
+            結束並開放本頁
+          </button>
+          <button disabled={busy} onClick={() => setConfirmOpen(null)}>
+            取消
+          </button>
+        </div>
+      )}
+      {privateRecords && pageRound && (
         <div className="classroom-private">
           <button onClick={() => (records ? setRecords(null) : void loadRecords())}>
             {records ? '隱藏私人紀錄' : '私人參與紀錄（請先暫停投影）'}
@@ -481,13 +664,13 @@ export function TeacherInteraction({
           {failure}
         </p>
       )}
-      {show && round && !black && (
+      {show && pageRound && !black && (
         <div
           className="interaction-projection"
           style={{ bottom: footerHeight }}
           aria-label="即時投票結果"
         >
-          <PollResults round={round} />
+          <PollResults round={pageRound} expired={interactionExpired(pageRound, now)} />
         </div>
       )}
     </div>

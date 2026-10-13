@@ -8,11 +8,13 @@ import {
   validateResponses,
   tally,
   visibleRound,
+  classroomDurations,
 } from '../../shared/classroom';
 export function createClassroomHandlers(
   db: Firestore,
   access: (req: any, id: string, teacher?: boolean) => Promise<any>,
   options: any,
+  now: () => number = Date.now,
 ) {
   const authorize = async (req: any, teacher = false) => {
     if (req.data?.courseId !== MI_CLASSROOM_COURSE)
@@ -26,11 +28,22 @@ export function createClassroomHandlers(
       throw new HttpsError('invalid-argument', '互動場次無效');
     return rounds().doc(id);
   };
+  const rosterCount = async (c: any, classes: string[]) => {
+    const roster =
+      c.rosterVersion === 2
+        ? await db.collection('enrollments').where('courseId', '==', MI_CLASSROOM_COURSE).get()
+        : await db.collection('roster').get();
+    return roster.docs.filter((d) => {
+      const row = d.data();
+      return row.enabled === true && classes.includes(row.classId);
+    }).length;
+  };
   return {
     controlClassroomInteraction: onCall(options, async (req) => {
       const { c } = await authorize(req, true);
       const { action } = req.data;
-      if (!['open', 'close'].includes(action)) throw new HttpsError('invalid-argument', '操作無效');
+      if (!['open', 'close', 'extend'].includes(action))
+        throw new HttpsError('invalid-argument', '操作無效');
       if (action === 'open') {
         const def = interactions.find((q) => q.slideId === req.data.slideId);
         const classes = req.data.classIds;
@@ -41,11 +54,25 @@ export function createClassroomHandlers(
           classes.some((x) => typeof x !== 'string' || !c.classIds.includes(x))
         )
           throw new HttpsError('invalid-argument', '請選擇題目及參與班級');
+        const seconds = req.data.durationSeconds ?? 0;
+        if (!classroomDurations.includes(seconds))
+          throw new HttpsError('invalid-argument', '倒數時間無效');
+        const eligibleCount = await rosterCount(c, classes);
         const id = randomUUID(),
           target = ref(id);
         return db.runTransaction(async (tx) => {
           const current = (await tx.get(state())).data();
-          if (current?.openRoundId) throw new HttpsError('failed-precondition', '請先結束目前互動');
+          let previous: PollRound | undefined;
+          if (current?.openRoundId) {
+            if (req.data.replaceRoundId !== current.openRoundId)
+              throw new HttpsError('failed-precondition', '目前互動已變更，請重新確認');
+            previous = (await tx.get(ref(current.openRoundId))).data() as PollRound;
+            if (!previous || previous.status !== 'open')
+              throw new HttpsError('failed-precondition', '目前互動已變更，請重新確認');
+          } else if (req.data.replaceRoundId) {
+            throw new HttpsError('failed-precondition', '目前互動已變更，請重新確認');
+          }
+          const openedAt = now();
           const number = (current?.numbers?.[def.slideId] || 0) + 1;
           const round: PollRound = {
             id,
@@ -53,17 +80,22 @@ export function createClassroomHandlers(
             classIds: [...new Set(classes)] as string[],
             number,
             status: 'open',
-            openedAt: Date.now(),
+            openedAt,
+            eligibleCount,
+            ...(seconds ? { deadlineAt: openedAt + seconds * 1000 } : {}),
             total: 0,
             counts: {},
           };
+          if (previous)
+            tx.set(ref(previous.id), { ...previous, status: 'closed', closedAt: openedAt });
           tx.set(target, round);
           tx.set(state(), {
             openRoundId: id,
             latestRoundId: id,
             numbers: { ...(current?.numbers || {}), [def.slideId]: number },
+            latestBySlide: { ...(current?.latestBySlide || {}), [def.slideId]: id },
           });
-          return { round };
+          return { round, serverNow: now() };
         });
       }
       const target = ref(req.data.roundId);
@@ -71,28 +103,38 @@ export function createClassroomHandlers(
         const current = (await tx.get(state())).data();
         const round = (await tx.get(target)).data() as PollRound | undefined;
         if (!round) throw new HttpsError('not-found', '互動不存在');
+        if (action === 'extend') {
+          if (
+            round.status !== 'open' ||
+            current?.openRoundId !== round.id ||
+            round.deadlineAt === undefined
+          )
+            throw new HttpsError('failed-precondition', '只能延長目前開放中的倒數互動');
+          round.deadlineAt = Math.max(round.deadlineAt, now()) + 30000;
+        }
         if (action === 'close') {
-          if (round.status === 'closed') return { round };
+          if (round.status === 'closed') return { round, serverNow: now() };
           round.status = 'closed';
-          round.closedAt = Date.now();
+          round.closedAt = now();
           if (current?.openRoundId === round.id) tx.set(state(), { ...current, openRoundId: '' });
         }
         tx.set(target, round);
-        return { round: visibleRound(round) };
+        return { round: visibleRound(round), serverNow: now() };
       });
     }),
     getClassroomInteraction: onCall(options, async (req) => {
       const { p } = await authorize(req);
       if (p.teacher) throw new HttpsError('permission-denied', '此入口供學生使用');
       const current = (await state().get()).data();
-      if (!current?.latestRoundId) return { round: null };
+      if (!current?.latestRoundId) return { round: null, serverNow: now() };
       const target = ref(current.latestRoundId),
         round = (await target.get()).data() as PollRound;
-      if (!round || !round.classIds.includes(p.classId)) return { round: null };
+      if (!round || !round.classIds.includes(p.classId)) return { round: null, serverNow: now() };
       const response = (await target.collection('responses').doc(p.uid).get()).data();
       const { counts, total, ...prompt } = round;
       return {
         round: prompt,
+        serverNow: now(),
         submitted: !!response,
         answers: response?.answers || null,
         ...(round.status === 'closed' ? { results: visibleRound(round) } : {}),
@@ -110,6 +152,8 @@ export function createClassroomHandlers(
           throw new HttpsError('permission-denied', '不屬於此互動班級');
         if (existing) return { submitted: true, answers: existing.answers };
         if (round.status !== 'open') throw new HttpsError('failed-precondition', '教師已結束作答');
+        if (round.deadlineAt !== undefined && now() > round.deadlineAt + 3000)
+          throw new HttpsError('deadline-exceeded', '時間到，作答已截止');
         // Bound a round document well below Firestore's 1MiB limit, using only fixed-choice statistics.
         if (round.total >= 200) throw new HttpsError('resource-exhausted', '此輪人數已達上限');
         let answers;
@@ -120,7 +164,7 @@ export function createClassroomHandlers(
         }
         tx.set(response, {
           answers,
-          submittedAt: Date.now(),
+          submittedAt: now(),
           uid: p.uid,
           classId: p.classId,
           name: p.name || '',
@@ -131,11 +175,29 @@ export function createClassroomHandlers(
       });
     }),
     classroomInteractionReport: onCall(options, async (req) => {
-      await authorize(req, true);
+      const { c } = await authorize(req, true);
       const current = (await state().get()).data();
-      const id = req.data.roundId || current?.latestRoundId;
+      const active = current?.openRoundId
+        ? ((await ref(current.openRoundId).get()).data() as PollRound)
+        : undefined;
+      if (active && active.eligibleCount === undefined)
+        active.eligibleCount = await rosterCount(c, active.classIds);
+      let id =
+        req.data.roundId ||
+        (req.data.slideId ? current?.latestBySlide?.[req.data.slideId] : current?.latestRoundId);
+      // Legacy rounds predate latestBySlide; a single-field query needs no new composite index.
+      if (!id && req.data.slideId) {
+        const list = await rounds().where('slideId', '==', req.data.slideId).get();
+        id = list.docs
+          .map((d) => d.data() as PollRound)
+          .sort((a, b) => b.openedAt - a.openedAt)[0]?.id;
+      }
       const selected = id ? ((await ref(id).get()).data() as PollRound) : undefined;
-      const result: any = { round: selected ? visibleRound(selected) : null };
+      const result: any = {
+        round: selected ? visibleRound(selected) : null,
+        activeRound: active?.status === 'open' ? visibleRound(active) : null,
+        serverNow: now(),
+      };
       if (req.data.history === true) {
         const list = await rounds().orderBy('openedAt', 'desc').limit(100).get();
         result.rounds = list.docs.map((d) => {

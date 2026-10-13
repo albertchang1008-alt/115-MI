@@ -1,3 +1,19 @@
+## 2026-10-13 Codex：課堂互動常駐狀態／頁綁定／倒數本機完成
+- 僅MI課堂互動：三態狀態列跨頁常駐、黑屏隱藏；12互動頁控制與頁內確認，後端同交易關舊開新並驗預期舊輪。deadlineAt與3秒寬限、教師目前輪＋30秒、學生伺服器時鐘校正／10秒提醒／保留未送選項；歷次結果與目前open輪分離，舊輪相容。
+- npm run check前端137＋Functions46＝183全過0跳過，兩端build／版本／49入口成功。新增後端四項、時間顯示與React回歸，1280／390及1.2／全螢幕／黑屏截圖集；全部本機合成資料，無私有簡報或真實名冊。
+- 停在本機commit，codex/115-mi-assessments／基底d48aac87，不push／部署，等Claude新驗收。正式測驗／題庫／名冊／成績／AP2不動；報告docs/115-MI_INTERACTION_STATUS.md，handoff淘汰過期83題／待舊Claude等現況。
+
+## 2026-10-13 Claude：115-MI課堂互動／前後測／授課控制台事後獨立驗收 PASS
+- 檢視8753865..d48aac8共24程式檔與12頁選項；醫學內容全正確，權限、單人單票交易、私有答案與公布順序審查通過。
+- 獨立重跑：前端135（環境封鎖Google Fonts致5項瀏覽器測試失敗，去@import後135全過）、Functions42、build／49入口通過。
+- 非阻擋建議：課程代碼寫死三處、反思改選項後缺概念改變文字、c1-toxin理由選項3措辭、測試依賴外部字型。報告docs/115-MI_CLASSROOM_CLAUDE_REVIEW.md。未改程式、未commit／push／部署。
+
+## 2026-10-13 Codex：115-MI兩項修正發布成功
+- 教師授權「現在可以更新」，d48aac87正常push mi/main；Actions38317348554建置及Pages部署success。前端135＋Functions42全過0跳過、版本／兩端編譯／49入口成功。
+- 線上首頁／新JS200，新JS SHA256與本機已驗build逐位元一致。Chrome正式前測補考填理由後切後測，來源回一般正式測驗且理由欄消失，未建立新場次；截图teacher-kind-switch-fixed-live.png。
+- 影片等待進度／失敗重試同批發布，前輪本機原生Chrome延遲／失敗／重試已驗，本輪未新增線上學生播放。證據fixes-release-verification.json。
+- 只更新MI前端，未部署Functions、未改課程／名冊／場次／成績；版本仍1.7.1。MI HEAD與remote main=d48aac87，後續證據與交接未提交；根目錄e8805f8維持原狀。
+
 ## 2026-10-13 Codex：教師授權發布續播與測驗種類切換修正
 - Student等待雲端進度後建立活動播放器，讀取失敗可重試；TeacherAssessments切換前／後測清空補考來源及理由，附兩份本機回歸fixture。
 - 完整前端135＋Functions42全過0跳過；前端TypeScript／Vite／版本與後端runtime／編譯／49入口成功。先前headless沙箱受阻已核准沙箱外重跑通過。

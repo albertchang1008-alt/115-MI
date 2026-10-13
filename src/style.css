@@ -1948,3 +1948,10 @@ body { padding-bottom: 60px; }
 .interaction-projection .poll-results-head{position:sticky;top:-24px;z-index:2;background:#f7f4ef;padding:12px 0}
 @media(max-width:600px){.interaction-projection .poll-results-head{top:-12px}}
 .student-interaction-host{max-width:1160px;margin:20px auto;padding:0 16px}
+
+/* MI classroom controls occupy their own footer; never cover slide content. */
+.classroom-statusbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:8px;padding:10px 14px;width:100%;font-size:calc(15px * var(--font-scale,1));box-sizing:border-box;background:#146442;color:#fff}
+.classroom-statusbar>span:first-child{margin-right:auto;overflow-wrap:anywhere}.classroom-statusbar.idle{background:#455361}.classroom-statusbar.expired{background:#8b480e}.classroom-statusbar button{padding:8px 12px}.interaction-timer{font-weight:700;font-variant-numeric:tabular-nums}.interaction-timer.urgent,.interaction-timer.expired{color:#9c350a}.interaction-control select{max-width:100%}.interaction-confirm{position:absolute;inset:12px 12px auto;z-index:9;background:#fff;color:#1e2933;border:3px solid #146442;border-radius:12px;padding:20px;box-shadow:0 4px 24px #0006}.interaction-confirm button{margin:4px}.interaction-control>strong{overflow-wrap:anywhere}.teaching-screen:fullscreen .teacher-interaction{flex-shrink:0}.teaching-screen:fullscreen .teaching-canvas{min-height:0;flex-shrink:1}.teaching-screen:fullscreen{overflow:auto}
+@media(max-width:600px){.classroom-statusbar{font-size:calc(13px * var(--font-scale,1))}.interaction-confirm{padding:12px}.interaction-confirm button{width:100%;margin:4px 0}.teacher-interaction .interaction-control label select{width:auto}}
+
+.classroom-statusbar{width:fit-content;max-width:calc(100% - 16px);margin:8px 8px 0 auto;border-radius:8px}

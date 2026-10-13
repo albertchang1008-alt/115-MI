@@ -15,7 +15,7 @@ const params = new URLSearchParams(location.search),
   role = params.get('role') || 'teacher',
   uid = params.get('uid') || 'student-1',
   classId = params.get('class') || 'N551';
-const key = '115-mi-classroom-local-preview-v2';
+const key = '115-mi-classroom-local-preview-v3';
 const course = {
   id: MI_CLASSROOM_COURSE,
   title: '115-MI課堂互動預覽',
@@ -34,7 +34,14 @@ const api = {
       round = s.rounds.find((r: any) => r.id === d.roundId) || s.rounds.at(-1);
     if (name === 'classroomInteractionReport')
       return {
-        round: round ? visibleRound(round) : null,
+        round:
+          (d.roundId
+            ? round
+            : d.slideId
+              ? [...s.rounds].reverse().find((r: any) => r.slideId === d.slideId)
+              : round) || null,
+        activeRound: s.rounds.find((r: any) => r.status === 'open') || null,
+        serverNow: Date.now(),
         ...(d.history ? { rounds: [...s.rounds].reverse() } : {}),
       };
     if (name === 'getClassroomInteraction') {
@@ -44,6 +51,7 @@ const api = {
         response = s.responses[current.id]?.[uid];
       return {
         round: prompt,
+        serverNow: Date.now(),
         submitted: !!response,
         answers: response?.answers,
         ...(current.status === 'closed' ? { results: visibleRound(current) } : {}),
@@ -65,7 +73,13 @@ const api = {
     if (name === 'controlClassroomInteraction') {
       if (role !== 'teacher') throw Error('需要教師權限');
       if (d.action === 'open') {
-        if (s.rounds.some((r: any) => r.status === 'open')) throw Error('請先結束目前互動');
+        const active = s.rounds.find((r: any) => r.status === 'open');
+        if ((active && active.id !== d.replaceRoundId) || (!active && d.replaceRoundId))
+          throw Error('目前互動已變更，請重新確認');
+        if (active) {
+          active.status = 'closed';
+          active.closedAt = Date.now();
+        }
         const def = interactions.find((x) => x.slideId === d.slideId)!;
         const next = {
           ...def,
@@ -74,20 +88,31 @@ const api = {
           number: s.rounds.filter((r: any) => r.slideId === d.slideId).length + 1,
           status: 'open',
           openedAt: Date.now(),
+          eligibleCount:
+            d.classIds.includes('N551') && d.classIds.includes('N552')
+              ? 54
+              : d.classIds.includes('N551')
+                ? 34
+                : 20,
+          ...(d.durationSeconds ? { deadlineAt: Date.now() + d.durationSeconds * 1000 } : {}),
           total: 0,
           counts: {},
         };
         s.rounds.push(next);
         localStorage.setItem(key, JSON.stringify(s));
-        return { round: next };
+        return { round: next, serverNow: Date.now() };
       }
       if (d.action === 'close') {
         round.status = 'closed';
         round.closedAt = Date.now();
       }
-      if (d.action !== 'close') throw Error('操作無效');
+      if (d.action === 'extend') {
+        if (round.status !== 'open' || round.deadlineAt === undefined)
+          throw Error('只能延長倒數互動');
+        round.deadlineAt = Math.max(round.deadlineAt, Date.now()) + 30000;
+      } else if (d.action !== 'close') throw Error('操作無效');
       localStorage.setItem(key, JSON.stringify(s));
-      return { round: visibleRound(round) };
+      return { round: visibleRound(round), serverNow: Date.now() };
     }
     if (name === 'submitClassroomInteraction') {
       if (localStorage.getItem('115-mi-classroom-preview-offline') === 'true')
@@ -95,6 +120,8 @@ const api = {
       const existing = s.responses[round.id]?.[uid];
       if (existing) return { submitted: true, answers: existing.answers };
       if (round.status !== 'open') throw Error('教師已結束作答');
+      if (round.deadlineAt !== undefined && Date.now() > round.deadlineAt + 3000)
+        throw Error('時間到，作答已截止');
       const answers = validateResponses(round, d.answers);
       s.responses[round.id] ||= {};
       s.responses[round.id][uid] = { answers };

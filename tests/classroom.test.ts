@@ -1,6 +1,14 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { interactions, validateResponses, tally, PollRound } from '../shared/classroom';
+import {
+  interactions,
+  validateResponses,
+  tally,
+  PollRound,
+  interactionSeconds,
+  interactionExpired,
+  interactionTimeLabel,
+} from '../shared/classroom';
 test('12頁全部選項式，拒絕自由文字與重複排序，沒有答案鍵', () => {
   assert.equal(interactions.length, 12);
   assert.equal(new Set(interactions.map((d) => d.slideId)).size, 12);
@@ -68,4 +76,14 @@ test('舊短答格式不能再接受任意內容', () => {
     fields: [{ id: 'reason', label: '理由', kind: 'text', options: [] }],
   };
   assert.throws(() => validateResponses(legacy as any, { reason: '任意文字' }), /格式已停用/);
+});
+
+test('倒數顯示到零就停、舊資料顯示已開時間，格式與10秒界線', () => {
+  const round = { openedAt: 1000, deadlineAt: 61000 };
+  assert.equal(interactionSeconds(round, 51000), 10);
+  assert.equal(interactionExpired(round, 61000), true);
+  assert.equal(interactionSeconds(round, 99999), 0);
+  assert.equal(interactionSeconds({ openedAt: 1000 }, 62000), 61);
+  assert.equal(interactionExpired({}, 99999), false);
+  assert.equal(interactionTimeLabel(61), '1:01');
 });

@@ -225,6 +225,8 @@ export type PollRound = {
   status: 'open' | 'closed';
   openedAt: number;
   closedAt?: number;
+  deadlineAt?: number;
+  eligibleCount?: number;
   total: number;
   counts: Record<string, number[]>;
 };
@@ -271,4 +273,18 @@ export function tally(round: PollRound, answers: Responses): PollRound {
 }
 export function visibleRound(round: PollRound): PollRound {
   return structuredClone(round);
+}
+
+/** The deadline display has no grace; only the server accepts a 3-second network grace. */
+export const classroomDurations = [0, 30, 60, 90, 120, 180] as const;
+export function interactionSeconds(round: Pick<PollRound, 'deadlineAt' | 'openedAt'>, now: number) {
+  return round.deadlineAt === undefined
+    ? Math.max(0, Math.floor((now - round.openedAt) / 1000))
+    : Math.max(0, Math.ceil((round.deadlineAt - now) / 1000));
+}
+export function interactionExpired(round: Pick<PollRound, 'deadlineAt'>, now: number) {
+  return round.deadlineAt !== undefined && now >= round.deadlineAt;
+}
+export function interactionTimeLabel(seconds: number) {
+  return `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`;
 }

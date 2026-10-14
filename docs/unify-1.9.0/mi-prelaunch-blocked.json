@@ -1,0 +1,32 @@
+{
+  "release": "510b6ad",
+  "project": "mi-bd885",
+  "courseId": "115-1-MI-國考精準對焦",
+  "checkedAt": "2026-10-14T00:29:50.115Z",
+  "assessmentCount": 6,
+  "roundCount": 19,
+  "openAssessments": 1,
+  "activeSessions": 0,
+  "openRounds": 0,
+  "openAssessmentMetadata": [
+    {
+      "id": "posttest-6133c5c4-ecd4-4247-9ee2-85811b3f58e2",
+      "state": "open",
+      "kind": "posttest",
+      "title": "後測",
+      "classIds": [
+        "N551",
+        "N552",
+        "test"
+      ],
+      "testArchived": null
+    }
+  ],
+  "stoppedAt": "step 0: formal assessment is open",
+  "backupPerformed": false,
+  "dryRunPerformed": false,
+  "migrationApplied": false,
+  "firebaseDeployed": false,
+  "pagesPushed": false,
+  "studentAnswersOrScoresRead": false
+}

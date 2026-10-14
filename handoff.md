@@ -2,22 +2,20 @@
 目前版本：1.9.0
 
 ## 現況（2026-10-14）
-- worktree .worktrees/release-mi-1.9.0；分支 release/mi-1.9.0。
-- 基底mi/main70354e0（含d48aac8），合併共用7a6720e（含CI fixtures修正）；本機merge commit以git log -1查閱。
-- 24衝突已核對無標記並解決；d48aac8兩項修正與原fixtures保留。
-- workflow缺VITE_SITE_ID時fallback mi；MI GitHub variable未設，唯讀列教師發布前待辦，本輪不改遠端。
-- .firebaserc依教師指示不改；所有後續MI Firebase指令必明確--project mi-bd885，不使用AP2 deploy.sh。
-- 29個未追蹤AP2公開教材資料夾已移到repo外_mi-merge-aside，沒有提交；指定四檔回到已暫存版本。MI public/materials只有兩份微免教材。
-- 分站教材登錄測試兩站都有斷言、不skip；同檔回補unify commit178f862，共用AP2 check158／54全過，AP2不重新部署。
-- 純暫存checkout-index匯出＋npm ci跑MI完整check150／Functions54、0 fail／0 skipped；版本／build／51入口通過。
-- 乾淨匯出dist只有兩份MI教材＋三CHP，site.json為mi；不依賴未追蹤檔。
-- 重跑離線dry-run成功：mi-bd885、12題與slideTransforms一致；未連線正式Firebase。
-- Excel引用Claude已完成稽核：暫存結果相對mi/main沒有任何.xlsx變動；不修先前工具，不改Excel。
-- 報告docs/MI_1.9.0_RELEASE_PREPARATION.md；check與verification／dry-run證據在docs/unify-1.9.0/。
-- 未push mi／apply／部署MI／讀寫正式學生資料或成績。AP2正式main7a6720e不變。
+- .worktrees/release-mi-1.9.0／release/mi-1.9.0；510b6ad已由Claude複驗通過，教師授權MI上線。
+- 本輪停在步驟0：08:29:50台灣時間查到1個open正式後測，班級N551／N552／test；active session0、open互動輪次0。
+- 場次posttest-6133c5c4-ecd4-4247-9ee2-85811b3f58e2仍開放；沒有修改／關閉，須教師結束後再重新檢查。
+- 只讀狀態metadata，未讀作答內容／成績。備份、dry-run、apply、Firebase部署、Pages push均未開始。
+- 指定備份路徑已加本機Git info/exclude，未匯出備份，不能提交將來的私有備份。
+- MI正式1.9.0尚未發布；本輪沒有Git遠端操作，前次mi/main70354e0。
+- 最新報告docs/DEPLOY_MI_1.9.0_REPORT.md與mi-prelaunch-blocked.json；本輪交接commit以git log -1查閱，僅本機。
+- 本機準備150／54、0 skipped及dist兩教材＋三CHP已由Claude從510b6ad匯出複驗；共用回補178f862，不重新部署AP2。
+- .firebaserc不改；所有MI Firebase指令必明確--project mi-bd885。不使用AP2 deploy.sh。
+- GitHub VITE_SITE_ID依新交辦維持未設，由workflow fallback mi；不得修改變數。
+- 未改Excel或正式學生資料、不在正式班建立輪次、不force push／no-verify／skip。
 
 ## 下一步
-1. 停在本機merge commit，交Claude複驗合併、來源隔離、分站測試與migration計畫。
-2. 教師發布前確認／設定MI GitHub VITE_SITE_ID=mi；本輪不修改。
-3. Claude通過且教師另行授權後migration→MI Functions→Pages；本輪仍全部禁止。
-4. 更新handoff／DEVELOPMENT_LOG；commit結尾[Codex]，不force push／no-verify／skip。
+1. 教師結束後測後，重新檢查無open正式測驗／active session／open互動，不沿用舊檢查。
+2. 唯讀備份＋dry-run比對→migration apply→確認寫入→MI Functions→規則／索引→普通push mi/main，順序不得換。
+3. 舊路徑檢查擋下即停；CLI刪索引提示一律保留回報；任何失敗停下、不自行回退。
+4. 上線後Actions／hash／索引READY／排程、test班驗證；N551／N552僅唯讀。

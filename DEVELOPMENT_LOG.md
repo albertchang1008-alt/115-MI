@@ -3,6 +3,12 @@
 - npm run check前端137＋Functions46＝183全過0跳過，兩端build／版本／49入口成功。新增後端四項、時間顯示與React回歸，1280／390及1.2／全螢幕／黑屏截圖集；全部本機合成資料，無私有簡報或真實名冊。
 - 停在本機commit，codex/115-mi-assessments／基底d48aac87，不push／部署，等Claude新驗收。正式測驗／題庫／名冊／成績／AP2不動；報告docs/115-MI_INTERACTION_STATUS.md，handoff淘汰過期83題／待舊Claude等現況。
 
+## 1.9.0 MI授權上線，正式後測open而停止（2026-10-14，Codex）
+- Claude複驗510b6ad通過、教師授權上線；開工唯讀檢查08:29:50發現後測open，班級N551／N552／test；active session0／open互動0。
+- 依交辦停在步驟0，不關閉場次。備份、dry-run、migration、Firebase與Pages均未開始；備份路徑只加入本機Git排除。
+- 只讀場次／輪次metadata，未讀寫學生作答成績、未改Excel或GitHub變數。報告docs/DEPLOY_MI_1.9.0_REPORT.md。
+- 教師結束後測後重新檢查，再依備份→dry-run→apply→Functions→規則索引→Pages；任何失敗停下，不自行回退。
+
 ## 1.9.0 MI分站回歸與乾淨匯出驗證（2026-10-14，Codex；本機待Claude複驗）
 - 依教師新指示將未追蹤AP2公開教材移出repo、還原指定4檔；不提交AP2教材。
 - 教材登錄測試分站：AP2維持五份physiology斷言，MI核對兩教材HTML／來源／ID／目錄及AP2公開檔不存在，無skip。

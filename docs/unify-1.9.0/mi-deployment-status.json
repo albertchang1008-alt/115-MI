@@ -1,0 +1,132 @@
+{
+  "date": "2026-10-14",
+  "validatedSource": "510b6ad",
+  "deployedSource": "5dd7058 (documentation-only changes after 510b6ad)",
+  "preflight": {
+    "project": "mi-bd885",
+    "courseId": "115-1-MI-國考精準對焦",
+    "checkedAt": "2026-10-14T01:03:07.714Z",
+    "assessments": 6,
+    "rounds": 19,
+    "openAssessments": 0,
+    "activeSessions": 0,
+    "openRounds": 0
+  },
+  "backup": {
+    "directory": "/Users/HHC/Documents/ChatGPT/課程平台1.0/.worktrees/release-mi-1.9.0/docs/unify-1.9.0/mi-prelaunch-backup/2026-10-14T01-03-07-715Z",
+    "files": [
+      "course.json",
+      "classroomConfig.json",
+      "presentation.json",
+      "classroomState-current.json"
+    ],
+    "localOnly": true,
+    "gitIgnored": true
+  },
+  "dryRunMatchesSavedBytes": true,
+  "migration": {
+    "project": "mi-bd885",
+    "checkedAt": "2026-10-14T01:04:53.962Z",
+    "features": {
+      "root": {
+        "classroomInteraction": true,
+        "teachingConsole": true,
+        "assessments": true
+      },
+      "draft": {
+        "teachingConsole": true,
+        "assessments": true,
+        "classroomInteraction": true
+      },
+      "published": {
+        "teachingConsole": true,
+        "assessments": true,
+        "classroomInteraction": true
+      }
+    },
+    "interactions": 12,
+    "keys": [
+      "slideTransforms",
+      "interactionNotesPrefix",
+      "interactions"
+    ],
+    "matchesMigrationJSON": true,
+    "snapshotFields": false
+  },
+  "functions": {
+    "exitCode": 2,
+    "successfulOperations": 59,
+    "created": 5,
+    "updated": 54,
+    "failed": [
+      "platform:deleteCourse(asia-east1)"
+    ],
+    "successNames": [
+      "getClassroomConfig(asia-east1)",
+      "getMyReflection(asia-east1)",
+      "saveReflection(asia-east1)",
+      "publishCourse(asia-east1)",
+      "setStudentNotice(asia-east1)",
+      "getExplanationResearchEvidence(asia-east1)",
+      "submitMixedAttempts(asia-east1)",
+      "buildReviewExam(asia-east1)",
+      "saveCourse(asia-east1)",
+      "getRoster(asia-east1)",
+      "importRoster(asia-east1)",
+      "saveClassroomConfig(asia-east1)",
+      "getReflections(asia-east1)",
+      "migrateRoster(asia-east1)",
+      "publishQuestions(asia-east1)",
+      "saveExplanationResearchEvents(asia-east1)",
+      "dailyReports(asia-east1)",
+      "syncSheet(asia-east1)",
+      "syncRoster(asia-east1)",
+      "saveLearningEvents(asia-east1)",
+      "getPublished(asia-east1)",
+      "updateReports(asia-east1)",
+      "getReports(asia-east1)",
+      "getProgress(asia-east1)",
+      "saveActivity(asia-east1)",
+      "getSnapshots(asia-east1)",
+      "mergeChapter(asia-east1)",
+      "getBank(asia-east1)",
+      "bootstrap(asia-east1)",
+      "endCurrentExam(asia-east1)",
+      "getAssessments(asia-east1)",
+      "getLearningDiagnostics(asia-east1)",
+      "controlAssessment(asia-east1)",
+      "saveAssessment(asia-east1)",
+      "previewAssessment(asia-east1)",
+      "prepareAssessment(asia-east1)",
+      "getSyncStatus(asia-east1)",
+      "renameArchiveLabel(asia-east1)",
+      "sheetsPublish(asia-east1)",
+      "setUnitVisibility(asia-east1)",
+      "getHistory(asia-east1)",
+      "deleteReviewExam(asia-east1)",
+      "submitAttempt(asia-east1)",
+      "questionStudents(asia-east1)",
+      "saveSheetConfig(asia-east1)",
+      "getCompletion(asia-east1)",
+      "setSchedule(asia-east1)",
+      "createSnapshot(asia-east1)",
+      "archiveCourse(asia-east1)",
+      "startAssessment(asia-east1)",
+      "getClassroomCourse(asia-east1)",
+      "assessmentReport(asia-east1)",
+      "getTeachingDeck(asia-east1)",
+      "getClassroomInteraction(asia-east1)",
+      "controlClassroomInteraction(asia-east1)",
+      "expireAssessments(asia-east1)",
+      "classroomInteractionReport(asia-east1)",
+      "submitClassroomInteraction(asia-east1)",
+      "classroomInteractionRecords(asia-east1)"
+    ]
+  },
+  "stoppedAt": "step 2 Functions failed",
+  "rulesIndexesDeployed": false,
+  "pagesPushed": false,
+  "migrationRetried": false,
+  "rollbackPerformed": false,
+  "formalStudentAnswersOrScoresChanged": false
+}

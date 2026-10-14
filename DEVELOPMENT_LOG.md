@@ -3,6 +3,13 @@
 - npm run check前端137＋Functions46＝183全過0跳過，兩端build／版本／49入口成功。新增後端四項、時間顯示與React回歸，1280／390及1.2／全螢幕／黑屏截圖集；全部本機合成資料，無私有簡報或真實名冊。
 - 停在本機commit，codex/115-mi-assessments／基底d48aac87，不push／部署，等Claude新驗收。正式測驗／題庫／名冊／成績／AP2不動；報告docs/115-MI_INTERACTION_STATUS.md，handoff淘汰過期83題／待舊Claude等現況。
 
+## 1.9.0 MI migration成功、Functions部分失敗停止（2026-10-14，Codex）
+- 教師結束後測後重新step0：09:03:07 open測驗／active session／open互動全0，四份唯讀本機備份完成、Git排除，dry-run逐位元一致。
+- 原腳本apply成功；三處features一致、12題＋簡報轉換與JSON一致、無snapshot欄位，未改學生作答／成績。
+- Functions明確mi-bd885／non-interactive，predeploy51入口通過；59操作成功（5create／54update），deleteCourse更新失敗，CLI exit2。
+- 依任何一步失敗停下：規則索引／Pages未執行，不重apply、不回退、不改變數。狀態及完整stdout docs/unify-1.9.0/mi-deployment-status.json／mi-functions-deploy-failure.txt。
+- 私有備份不提交；報告docs/DEPLOY_MI_1.9.0_REPORT.md。教師續作前重新確認無活動，再處理Functions失敗項。
+
 ## 1.9.0 MI授權上線，正式後測open而停止（2026-10-14，Codex）
 - Claude複驗510b6ad通過、教師授權上線；開工唯讀檢查08:29:50發現後測open，班級N551／N552／test；active session0／open互動0。
 - 依交辦停在步驟0，不關閉場次。備份、dry-run、migration、Firebase與Pages均未開始；備份路徑只加入本機Git排除。

@@ -2,6 +2,7 @@
 目前版本：1.9.0
 
 ## 現況（2026-10-14）
+- 共用guide主畫面說明已提交e2dd36c；AP2 check158／54、MI乾淨匯出check150／54及兩站guide1280／390通過、0 skipped。合併前git merge-tree預檢以預設sandbox執行，因Git中繼資料暫存檔權限失敗（exit128）；依教師指示停止，未實際merge、未跑合併後MI check。應使用已授權提升權限，待教師續作指示後合併；不push／部署。
 - .worktrees/release-mi-1.9.0／release/mi-1.9.0；510b6ad程式已由Claude複驗通過，教師授權MI上線。此次部署使用5dd7058（僅文件新增）。
 - 教師結束後測後，09:03:07台灣時間重新唯讀確認open測驗0／active session0／open互動0。
 - 四份備份本機匯出，Git info/exclude排除、不得提交；dry-run與保存版逐位元一致。路徑見部署報告。

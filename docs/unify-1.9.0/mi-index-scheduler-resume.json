@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-10-14T05:07:33.323Z",
+  "index": [
+    {
+      "name": "projects/mi-bd885/databases/(default)/collectionGroups/assessmentSessions/indexes/CICAgJjFqZMK",
+      "state": "READY",
+      "queryScope": "COLLECTION_GROUP",
+      "fields": [
+        {
+          "fieldPath": "state",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "expiresAt",
+          "order": "ASCENDING"
+        }
+      ]
+    }
+  ],
+  "logs": [
+    {
+      "timestamp": "2026-10-14T05:07:00.387119Z",
+      "severity": "INFO",
+      "status": 200,
+      "message": null
+    }
+  ]
+}

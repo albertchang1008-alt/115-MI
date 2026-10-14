@@ -1,0 +1,5 @@
+線上HTML指向assets/index-Dbnb149l.js；本機MI build為assets/index-C4gGzaUt.js。
+比對腳本先讀dist/assets/index-Dbnb149l.js時ENOENT，exit1；尚未取得兩份JS的SHA256，不能宣稱內容一致或已確認雜湊不同。
+node:internal/fs/promises:639
+Error: ENOENT: no such file or directory, open dist/assets/index-Dbnb149l.js
+依教師指示停止，未重建／重新部署／回退；原因尚未核對。

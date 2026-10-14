@@ -1,0 +1,9 @@
+{
+  "checkedAt": "2026-10-14T05:04:42.995Z",
+  "source": "Cloud Functions v2 GET via authenticated Firebase CLI",
+  "name": "projects/mi-bd885/locations/asia-east1/functions/deleteCourse",
+  "state": "ACTIVE",
+  "revision": "deletecourse-00004-zac",
+  "updateTime": "2026-10-13T11:48:34.464920870Z",
+  "stateMessages": []
+}

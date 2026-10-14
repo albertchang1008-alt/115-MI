@@ -1,3 +1,31 @@
+## 2026-10-14 Codex：A段依教師親驗完成，開始B本機整合
+- 教師明確回報test班報表／CSV、互動題目、倒數、加時、送出、結束及統計正常，正式班未操作；記錄「教師端項目由教師親自驗證」。A結案是教師指示，不將未提供的裝置／影片細節或原生工具登出推定為通過。
+- 以MI交接為主整合guide；雙方handoff及DEVELOPMENT_LOG（含未提交歷史）逐字備份docs/archive/guide-homescreen-2026-10-14/，合併時保留所有歷史區塊。只本機，不push／部署，不改資料或migration。
+
+## 2026-10-14 Codex：教師授權整份報表唯讀、僅核對test
+- 教師答覆允許只讀載入／下載整份報表與配對CSV，只核對test，CSV留repo外、不提交、不公布或修改任何結果。handoff與A驗證紀錄已更新；不再詢問相同授權。
+- 目前仍有原生教師操作工具阻塞，尚未下載或完成A，不開始B；本輪只文件，無程式／資料／遠端操作。
+
+## 2026-10-14 Codex：教師端A續驗因原生操作工具阻塞停止
+- 找到Brave學校既有教師分頁，重整確認1.9.0與舊前後測列表；授課控制台38頁／無開放互動可讀。未碰測驗控制、設定開關、正式班或學生資料。
+- AX與截圖不同步、elementHasNoFrame／ID失效／選單操作無反應，未能可靠完成互動；先前切頁失敗判斷更正，不列平台bug。未開輪或新作答，B未開始。報表／CSV僅整課程且無test篩選，範圍許可問題待答，未讀報表或下載。
+- 已嘗試教師登出，最後仍顯示教師登入，不能宣稱登出完成，需本人手動登出；關閉agent建立的重複test分頁。報告MI_1.9.0_A_VALIDATION_STATUS_2026-10-14.md，本輪只文件未提交、無merge／push／部署。
+
+## 2026-10-14 Codex：A教師登入驗證阻塞，未進B
+- 本輪讀MI handoff與既有同參數b64217d SHA一致證據；未重migration／部署／改variables。Chrome test首頁1.9.0恢復可讀、前後測已結束；教師驗證尚未進控制台。
+- 可控制Chrome與Brave的Google帳號選擇只有test用Gmail，無既有教師登入。Chrome選學校設定檔／視窗切換受其他視窗活動中斷，無法確認教師視窗。取消Chrome帳號選擇後畫面顯示auth/popup-closed-by-user，屬本次取消登入，不列為平台登入缺陷。
+- 依任何一步失敗停止：A未完整驗收，不開始B合併／MI check；沒有開輪或送出新答案，N551／N552未操作。教師使用既有帳號只操作test的授權仍有效，不需再次授權；需本人在可控制Chrome MI驗證分頁完成教師登入後續作。
+- 本輪僅交接更新未提交；原規畫／雜湊證據與先前未提交文件保留，MI release HEAD8c54b1a未動，不push／部署。
+
+## 2026-10-14 Codex：釐清1.9.0發布與驗收狀態
+- 回答教師剩餘工作與是否上線：MI b64217d部署／Actions／雜湊驗證已完成；test完整功能與正式班唯讀驗收未完成，不宣稱全部通過。guide主畫面尚未合併發布，最高管理者班級委派僅規畫。
+- handoff下一步更新為A驗收→B合併/check/guide→Claude複驗，舊13:09雜湊阻塞標示歷史。無程式／資料／遠端操作。
+
+## 2026-10-14 Codex：MI雜湊一致與班級互動管理者規畫
+- 官方gh暫存CLI只讀MI四個公開variables，SITE_ID未設；乾淨匯出b64217d依workflow mi／asia-east1＋同值build exit0。先解析線上index實際JS再解析本機JS，各index-Dbnb149l.js，SHA256一致（a09c063c…25d8d6），證據mi-b64217d-hash-verification.json。無變數修改或部署。
+- test學生首頁1.9.0與既有兩筆一般測驗100紀錄可讀，前後測已結束，TB src start24；未將尚未完成的重整續播／互動／報表驗證列通過。教師授權既有教師帳號僅操作test班，尚未新建輪次或作答；A未全部完成，B尚不開始。
+- 教師要求特定班級使用並本人最高管理者控制，新增CLASSROOM_CLASS_ADMIN_PLAN_2026-10-14.md，列現況／班級委派／管理操作／後端權限／多教師並行限制／分期與驗收。僅文件，未改權限／程式／Excel／學生資料，不push或部署；本輪文件與證據未提交。
+
 ## 2026-10-14 13:09 Codex：MI續上線，停在雜湊驗證
 - 13:04:08重新查MI open測驗／active session／open互動均0；未沿用09:03。
 - deleteCourse唯讀查ACTIVE／deletecourse-00004-zac／updateTime 2026-10-13T11:48:34.464920870Z；單獨重試一次成功，新ACTIVE／deletecourse-00005-xis／updateTime 2026-10-14T05:06:06.501867296Z，未重試整批。
@@ -5,6 +33,11 @@
 - **步驟4失敗停止**：線上JS index-Dbnb149l.js，本機MI build index-C4gGzaUt.js；比對腳本找不到線上同名本機檔ENOENT／exit1，SHA未比對，原因未核對。不重建、不重新部署、不回退。
 - test班互動／前後測／影片與guide驗證、N551／N552唯讀確認尚未完成；只登入既有test帳號，未新建輪次或作答。
 - 未重跑migration apply、未改Excel／學生資料／GitHub variables；主畫面guide尚未合併。報告docs/DEPLOY_MI_1.9.0_REPORT.md與unify-1.9.0/mi-resume-*證據；後續需教師指示。
+
+## 2026-10-14 Codex：手機主畫面說明續作，合併預檢衝突停止
+- 教師重新交辦後完整讀取handoff與CODEX_TASK_GUIDE_HOMESCREEN_2026-10-14.md；既有e2dd36c實作與兩站check／guide證據保留，沒有重改程式。
+- 以提升權限執行git merge-tree --write-tree --name-only release/mi-1.9.0 feature/1.9.0-unify，exit1；衝突僅DEVELOPMENT_LOG.md與handoff.md，暫存合併樹2ee5cecd9538b9bd3d8047749b46d95834fd5987。此為內容衝突，不是權限拒絕。
+- 依「任何一步失敗就停下」停止；未執行git merge、未跑合併後MI check，未push／部署，未改登入／Excel／學生資料。共用HEAD8e61f58，MI release HEADb64217d，均未移動。待教師續作指示後整合兩份交接文件，再合併、MI check、交Claude複驗。
 
 # 2026-10-14：主畫面說明合併前停止 [Codex]
 

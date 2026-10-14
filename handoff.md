@@ -2,16 +2,22 @@
 目前版本：1.9.0
 
 ## 現況（2026-10-14）
-- 共用guide主畫面說明已提交e2dd36c；AP2 check158／54、MI乾淨匯出check150／54及兩站guide1280／390通過、0 skipped。合併前git merge-tree預檢以預設sandbox執行，因Git中繼資料暫存檔權限失敗（exit128）；依教師指示停止，未實際merge、未跑合併後MI check。應使用已授權提升權限，待教師續作指示後合併；不push／部署。
-## 2026-10-14 13:09 Codex：MI續上線，停在雜湊驗證
-- 13:04:08重新查MI open測驗／active session／open互動均0；未沿用09:03。
-- deleteCourse唯讀查ACTIVE／deletecourse-00004-zac／updateTime 2026-10-13T11:48:34.464920870Z；單獨重試一次成功，新ACTIVE／deletecourse-00005-xis／updateTime 2026-10-14T05:06:06.501867296Z，未重試整批。
-- 規則索引部署成功，無刪索引提示；一般push mi/main到b64217d。Actions38514907129 build/deploy全綠；assessmentSessions索引READY；05:07UTC新排程HTTP200、查得日誌無缺索引錯誤。
-- **步驟4失敗停止**：線上JS index-Dbnb149l.js，本機MI build index-C4gGzaUt.js；比對腳本找不到線上同名本機檔ENOENT／exit1，SHA未比對，原因未核對。不重建、不重新部署、不回退。
-- test班互動／前後測／影片與guide驗證、N551／N552唯讀確認尚未完成；只登入既有test帳號，未新建輪次或作答。
-- 未重跑migration apply、未改Excel／學生資料／GitHub variables；主畫面guide尚未合併。報告docs/DEPLOY_MI_1.9.0_REPORT.md與unify-1.9.0/mi-resume-*證據；後續需教師指示。
+- worktree=.worktrees/release-mi-1.9.0，分支release/mi-1.9.0；MI remote=mi，Firebase=mi-bd885；不碰origin／ap2-7ed91。所有Firebase指令必帶專案，但本輪不執行Firebase／migration／部署。
+- **A段完成：教師端項目由教師親自驗證。** 教師在test班確認報表／CSV、互動題目／倒數／加時／送出／結束／統計正常，正式班未操作。報告docs/MI_1.9.0_A_VALIDATION_STATUS_2026-10-14.md。不把教師回報稱Codex親測；未提供的裝置／影片明細不額外宣稱通過。
+- 70354e0之後MI 1.9.0已發布b64217d；Functions單項重試／規則索引成功、Actions38514907129全綠，索引READY／排程HTTP200。migration已apply成功，不可重跑。
+- b64217d以相同GitHub公開variables＋workflow有效SITE_ID=mi乾淨重建，線上／本機index-Dbnb149l.js SHA256一致。證據docs/unify-1.9.0/mi-b64217d-hash-verification.json；未改variables。
+- **本輪B進行中**：合併feature/1.9.0-unify（e2dd36c／8e61f58）之主畫面說明，保留MI交接為主並補齊guide紀錄；合併後MI check／guide須零失敗零跳過，本機提交後交Claude，不push／部署。
+- guide來源：登入後逐字新增「2. 加到手機主畫面」，原2–10改3–11與id；手機字級及列印、guide-verify同步。原AP2 check158／54、MI匯出150／54及兩站1280／390 guide通過；這些不代替合併後MI檢查。
+- 先前兩次合併停止點（權限exit128／文件衝突exit1）、全部MI發布／A驗證歷史，以及unify既有固定決策與未提交交接，均逐字保存docs/archive/guide-homescreen-2026-10-14/，不刪除任一方紀錄。DEVELOPMENT_LOG合併時保留雙方每一歷史區塊。
+- 課程教師／每輪班級選擇已有；最高管理者／班級委派與多班並行僅新規畫docs/CLASSROOM_CLASS_ADMIN_PLAN_2026-10-14.md，未實作。
+- 報表可只讀整份但僅核對test，CSV只能留repo外；Codex未下載或提交CSV。先前原生工具的教師登出未能確認，未宣稱登出成功；最新教師授權先完成B，不再操作網站。
+
+## 固定決策
+- MI與AP2程式共用1.9.0，features按課程開關，建置VITE_SITE_ID分站；MI只發布兩教材＋三CHP，.firebaserc預設不改。
+- 課堂互動定義為課程classroomConfig/interactions；歷史state／rounds原路徑保留；互動不計成績或完成度。正式前後測採私有凍結來源、延後公布。
+- 不改登入signInWithPopup、Excel、學生作答／成績或功能開關；不用force／no-verify，不略過測試。完成工作更新handoff與DEVELOPMENT_LOG，commit結尾[Codex]。
 
 ## 下一步
-1. 教師指示後核對線上／本機產物差異，再補步驟4測試；deleteCourse已成功，不重apply、不自行回退。
-2. Firebase與Pages已發布b64217d；Actions成功，但雜湊驗證未完成，不自行重新部署。
-3. 再驗證Actions／hash／READY／排程與test班；N551／N552只讀、不建立輪次或作答。
+1. 完成B合併與MI check、guide驗證，再交Claude複驗。
+2. 教師用test帳號在iPhone／Android真機測：加主畫面→圖示開啟→Google登入→練習保存→關閉重開維持登入。若iPhone失敗依交辦改注意第3點、另評估redirect；本輪不改登入。
+3. 本輪停止本機commit，Claude PASS後仍需教師另行授權才可push或部署（AP2亦同）。

@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-10-14T05:48:47.286720+00:00",
+  "commit": "b64217d",
+  "remoteAsset": "./assets/index-Dbnb149l.js",
+  "localAsset": "./assets/index-Dbnb149l.js",
+  "remoteSha256": "a09c063c13e6818187559d8f0bc288f0975b689d418e5276cd4484fb8125d8d6",
+  "localSha256": "a09c063c13e6818187559d8f0bc288f0975b689d418e5276cd4484fb8125d8d6",
+  "matches": true,
+  "githubVariables": [
+    {
+      "name": "VITE_FIREBASE_API_KEY",
+      "value": "AIzaSyApjdOSjJbNUG_01BIDnZlpOroPeSG3Q0g"
+    },
+    {
+      "name": "VITE_FIREBASE_APP_ID",
+      "value": "1:62416037569:web:8170d6132cba25e2fe5640"
+    },
+    {
+      "name": "VITE_FIREBASE_AUTH_DOMAIN",
+      "value": "mi-bd885.firebaseapp.com"
+    },
+    {
+      "name": "VITE_FIREBASE_PROJECT_ID",
+      "value": "mi-bd885"
+    }
+  ],
+  "effectiveWorkflowParameters": {
+    "VITE_SITE_ID": "mi",
+    "VITE_SITE_ID_repositoryVariable": "unset",
+    "VITE_FUNCTIONS_REGION": "asia-east1"
+  },
+  "source": "git archive b64217d; no local .env"
+}

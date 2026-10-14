@@ -1,3 +1,8 @@
+## 2026-10-14 Codex：主畫面說明合併MI，本機驗證全過待Claude
+- release/mi-1.9.0合併feature/1.9.0-unify@8e61f58（含e2dd36c）；MI父efeb1e7。以MI交接為主，雙方原始文件逐字存archive，開發紀錄加入缺少6區塊並逐一確認雙方每區塊保留。
+- 合併後VITE_SITE_ID=mi npm run check：前端150／150、Functions54／54，0fail／skipped、版本與兩端build通過。guide-only dist shots：1280／390共11節、最小16px、無溢位／錯誤、列印與manifest／圖示子路徑200；dist僅MI兩教材＋三CHP，截圖人工看過。
+- guideHTML與交辦逐字一致；程式只改3個guide檔，登入／前後測／互動後端／學生資料／Excel與AP2未改。報告GUIDE_HOMESCREEN_MI_MERGE_2026-10-14_REPORT.md、截圖集與Claude交辦已附；停本機commit，不push／部署。A教師端項目由教師親自驗證，真機主畫面登入另待。
+
 ## 2026-10-14 Codex：A段依教師親驗完成，開始B本機整合
 - 教師明確回報test班報表／CSV、互動題目、倒數、加時、送出、結束及統計正常，正式班未操作；記錄「教師端項目由教師親自驗證」。A結案是教師指示，不將未提供的裝置／影片細節或原生工具登出推定為通過。
 - 以MI交接為主整合guide；雙方handoff及DEVELOPMENT_LOG（含未提交歷史）逐字備份docs/archive/guide-homescreen-2026-10-14/，合併時保留所有歷史區塊。只本機，不push／部署，不改資料或migration。
@@ -1036,5 +1041,60 @@
 - 新教師工作區、課程編輯與共用學生前台預覽。
 - 校內名冊驗證、整組作答、防重送、即時個人進度。
 - 版本化題庫、Sheets 發布、互動 HTML 套件與 YouTube 片段。
+- 增量報表、完成度看板、結算快照、匯出及版本檢查。
+- 測試及雲端驗收狀態請參考 docs/ACCEPTANCE.md；不將尚未連接的外部服務列為完成部署。
+
+
+## 共用guide分支補入紀錄（完整保留來源區塊）
+
+## 2026-10-14 Codex：手機主畫面說明續作，合併預檢衝突停止
+- 教師重新交辦後完整讀取handoff與CODEX_TASK_GUIDE_HOMESCREEN_2026-10-14.md；既有e2dd36c實作與兩站check／guide證據保留，沒有重改程式。
+- 以提升權限執行git merge-tree --write-tree --name-only release/mi-1.9.0 feature/1.9.0-unify，exit1；衝突僅DEVELOPMENT_LOG.md與handoff.md，暫存合併樹2ee5cecd9538b9bd3d8047749b46d95834fd5987。此為內容衝突，不是權限拒絕。
+- 依「任何一步失敗就停下」停止；未執行git merge、未跑合併後MI check，未push／部署，未改登入／Excel／學生資料。共用HEAD8e61f58，MI release HEADb64217d，均未移動。待教師續作指示後整合兩份交接文件，再合併、MI check、交Claude複驗。
+
+# 2026-10-14：主畫面說明合併前停止 [Codex]
+
+- 共用guide主畫面說明已提交e2dd36c；AP2 check158／54、MI乾淨匯出check150／54及兩站guide1280／390通過、0 skipped。合併前git merge-tree預檢以預設sandbox執行，因Git中繼資料暫存檔權限失敗（exit128）；依教師指示停止，未實際merge、未跑合併後MI check。應使用已授權提升權限，待教師續作指示後合併；不push／部署。
+
+# 2026-10-14：學生說明加入手機主畫面 [Codex]
+
+- 共用guide逐字加入iPhone／Android操作，舊節與id改3–11；字級≥16px、列印樣式。
+- guide-verify新增11節、清單、字級／無溢位／print，以及產物在Pages子路徑HTTP200的檢查；登入程式未改。
+- 檢查結果與真機待辦見docs/GUIDE_HOMESCREEN_2026-10-14_REPORT.md；本機提交後合併MI，待Claude複驗，不push／部署。
+
+# 開發紀錄
+目前版本：1.9.0
+
+## 1.9.0 共用分站教材測試回補（2026-10-14，Codex）
+- material-registration依站別核對：AP2保留原五份生理教材斷言；MI兩份微免HTML／來源／ID／目錄／SDK一致，且AP2公開檔不存在，無skip。
+- 與MI release相同測試檔；共用AP2完整check158／54、0 fail／skipped通過，純暫存MI匯出150／54、0 fail／skipped通過。
+- 本機回補commit，不push、不重新部署AP2。MI報告與待Claude複驗在release工作目錄。
+
+## 1.9.0 CI修正與AP2成功發布、MI暫存失敗（2026-10-13，Codex）
+- 7a6720e僅tests修正：MI70354e0兩份原檔.txt＋README SHA-256，讀fixture比對與雜湊檢查、無skip。
+- 無70354e0乾淨shallow clone與unify兩站完整check158／54、0 fail／skipped；deploy.sh同結果。
+- AP2 Actions38424586178 build/deploy全綠、Pages1.9.0成功；JS SHA與同設定本機build一致；索引READY、排程15:36–15:43 UTC連續200。
+- test班三新開關均關閉、guide可開、既有10題作答保存成功；影片20→38秒重整續播。AP2既有reflection0，反思僅本機React/callable回歸，不新增正式活动。
+- MI release/mi-1.9.0自70354e0（含d48aac8）開worktree，合併unify產24衝突；內容寫入後git add因default sandbox index.lock不可寫失敗，依指示停止。MERGE_HEAD／24unmerged保留，尚未check／dry-run／commit，不可部署。
+- 報告docs/DEPLOY_1.9.0_REPORT.md；未push mi／apply／部署MI／改Excel或正式學生資料。
+
+## 2026-10-07｜1.7.1 Claude 驗收後修正 [Codex]
+
+- 選看與不可計分單元排除逾期標記、人数、排序／篩選及CSV；補回歸測試。
+- 圖例分項加間距；最高分／門檻與作答次數加分隔。
+- check140／26、兩端build、版本檢查及兩尺寸截圖通過，待Claude複驗，未push／部署。
+
+
+
+## 三份生理教材預覽（2026-10-01，Codex，未發布）
+
+- 在 `codex/blood-vessel-infographic` managed工作樹完成血壓調控、淋巴系統、血液動力學三份獨立預覽；各6節點與11題、21张SVG，390px主圖最小14.94px、節點16.47px。108前端測試、建置、60張截圖與互動驗證通過；來源修訂与複核限制見該工作樹 `docs/PHYSIOLOGY_MATERIALS_PREVIEW.md`。未登錄／commit／發布。
+
+## 1.0.0 — 初始實作
+
+- 建立獨立 React／TypeScript／Vite 平台及 Firebase Functions。
+- 新教師工作區、課程編輯與共用學生前台預覽。
+- 校內名冊驗證、整組作答、防重送、即時個人進度。
+- 版本化题庫、Sheets 發布、互動 HTML 套件與 YouTube 片段。
 - 增量報表、完成度看板、結算快照、匯出及版本檢查。
 - 測試及雲端驗收狀態請參考 docs/ACCEPTANCE.md；不將尚未連接的外部服務列為完成部署。

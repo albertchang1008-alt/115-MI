@@ -1,0 +1,10 @@
+{
+  "baseBranch": "release/mi-1.9.0",
+  "sourceBranch": "feature/1.9.0-unify",
+  "sourceCommit": "8e61f58ff7d6a44feea85cc7ec98b4a3b1c5aa4d",
+  "releaseLogBlocksPreserved": true,
+  "unifyLogBlocksPreserved": true,
+  "additionalUnifyBlocks": 6,
+  "handoffArchives": "docs/archive/guide-homescreen-2026-10-14",
+  "guideHtmlMatchesAssignmentVerbatim": true
+}

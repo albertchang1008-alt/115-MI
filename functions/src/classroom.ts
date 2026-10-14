@@ -1,10 +1,10 @@
+import { featureAccess } from './features';
 import { randomUUID } from 'node:crypto';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { Firestore } from 'firebase-admin/firestore';
 import {
-  interactions,
-  MI_CLASSROOM_COURSE,
   PollRound,
+  validateInteractions,
   validateResponses,
   tally,
   visibleRound,
@@ -16,22 +16,21 @@ export function createClassroomHandlers(
   options: any,
   now: () => number = Date.now,
 ) {
+  access = featureAccess(access, 'classroomInteraction');
   const authorize = async (req: any, teacher = false) => {
-    if (req.data?.courseId !== MI_CLASSROOM_COURSE)
-      throw new HttpsError('permission-denied', '此課堂互動僅供115-MI課程');
     return access(req, req.data.courseId, teacher);
   };
-  const state = () => db.doc(`courses/${MI_CLASSROOM_COURSE}/classroomState/current`);
-  const rounds = () => db.collection(`courses/${MI_CLASSROOM_COURSE}/classroomRounds`);
-  const ref = (id: unknown) => {
+  const state = (courseId: string) => db.doc(`courses/${courseId}/classroomState/current`);
+  const rounds = (courseId: string) => db.collection(`courses/${courseId}/classroomRounds`);
+  const ref = (courseId: string, id: unknown) => {
     if (typeof id !== 'string' || !/^[a-zA-Z0-9-]{1,80}$/.test(id))
       throw new HttpsError('invalid-argument', '互動場次無效');
-    return rounds().doc(id);
+    return rounds(courseId).doc(id);
   };
-  const rosterCount = async (c: any, classes: string[]) => {
+  const rosterCount = async (courseId: string, c: any, classes: string[]) => {
     const roster =
       c.rosterVersion === 2
-        ? await db.collection('enrollments').where('courseId', '==', MI_CLASSROOM_COURSE).get()
+        ? await db.collection('enrollments').where('courseId', '==', courseId).get()
         : await db.collection('roster').get();
     return roster.docs.filter((d) => {
       const row = d.data();
@@ -39,13 +38,28 @@ export function createClassroomHandlers(
     }).length;
   };
   return {
+    getClassroomConfig: onCall(options, async req => {
+      await authorize(req, true);
+      const config = (await db.doc(`courses/${req.data.courseId}/classroomConfig/interactions`).get()).data();
+      return { interactions: validateInteractions(config?.interactions || []) };
+    }),
+    saveClassroomConfig: onCall(options, async req => {
+      await authorize(req, true);
+      let interactions;
+      try { interactions = validateInteractions(req.data.interactions); }
+      catch (e) { throw new HttpsError('invalid-argument', (e as Error).message); }
+      await db.doc(`courses/${req.data.courseId}/classroomConfig/interactions`).set({ interactions }, { merge: true });
+      return { ok: true };
+    }),
     controlClassroomInteraction: onCall(options, async (req) => {
       const { c } = await authorize(req, true);
       const { action } = req.data;
       if (!['open', 'close', 'extend'].includes(action))
         throw new HttpsError('invalid-argument', '操作無效');
       if (action === 'open') {
-        const def = interactions.find((q) => q.slideId === req.data.slideId);
+        const config = (await db.doc(`courses/${req.data.courseId}/classroomConfig/interactions`).get()).data();
+        const definitions = validateInteractions(config?.interactions || []);
+        const def = definitions.find((q) => q.slideId === req.data.slideId);
         const classes = req.data.classIds;
         if (
           !def ||
@@ -57,16 +71,16 @@ export function createClassroomHandlers(
         const seconds = req.data.durationSeconds ?? 0;
         if (!classroomDurations.includes(seconds))
           throw new HttpsError('invalid-argument', '倒數時間無效');
-        const eligibleCount = await rosterCount(c, classes);
+        const eligibleCount = await rosterCount(req.data.courseId, c, classes);
         const id = randomUUID(),
-          target = ref(id);
+          target = ref(req.data.courseId, id);
         return db.runTransaction(async (tx) => {
-          const current = (await tx.get(state())).data();
+          const current = (await tx.get(state(req.data.courseId))).data();
           let previous: PollRound | undefined;
           if (current?.openRoundId) {
             if (req.data.replaceRoundId !== current.openRoundId)
               throw new HttpsError('failed-precondition', '目前互動已變更，請重新確認');
-            previous = (await tx.get(ref(current.openRoundId))).data() as PollRound;
+            previous = (await tx.get(ref(req.data.courseId, current.openRoundId))).data() as PollRound;
             if (!previous || previous.status !== 'open')
               throw new HttpsError('failed-precondition', '目前互動已變更，請重新確認');
           } else if (req.data.replaceRoundId) {
@@ -87,9 +101,9 @@ export function createClassroomHandlers(
             counts: {},
           };
           if (previous)
-            tx.set(ref(previous.id), { ...previous, status: 'closed', closedAt: openedAt });
+            tx.set(ref(req.data.courseId, previous.id), { ...previous, status: 'closed', closedAt: openedAt });
           tx.set(target, round);
-          tx.set(state(), {
+          tx.set(state(req.data.courseId), {
             openRoundId: id,
             latestRoundId: id,
             numbers: { ...(current?.numbers || {}), [def.slideId]: number },
@@ -98,9 +112,9 @@ export function createClassroomHandlers(
           return { round, serverNow: now() };
         });
       }
-      const target = ref(req.data.roundId);
+      const target = ref(req.data.courseId, req.data.roundId);
       return db.runTransaction(async (tx) => {
-        const current = (await tx.get(state())).data();
+        const current = (await tx.get(state(req.data.courseId))).data();
         const round = (await tx.get(target)).data() as PollRound | undefined;
         if (!round) throw new HttpsError('not-found', '互動不存在');
         if (action === 'extend') {
@@ -116,7 +130,7 @@ export function createClassroomHandlers(
           if (round.status === 'closed') return { round, serverNow: now() };
           round.status = 'closed';
           round.closedAt = now();
-          if (current?.openRoundId === round.id) tx.set(state(), { ...current, openRoundId: '' });
+          if (current?.openRoundId === round.id) tx.set(state(req.data.courseId), { ...current, openRoundId: '' });
         }
         tx.set(target, round);
         return { round: visibleRound(round), serverNow: now() };
@@ -125,9 +139,9 @@ export function createClassroomHandlers(
     getClassroomInteraction: onCall(options, async (req) => {
       const { p } = await authorize(req);
       if (p.teacher) throw new HttpsError('permission-denied', '此入口供學生使用');
-      const current = (await state().get()).data();
+      const current = (await state(req.data.courseId).get()).data();
       if (!current?.latestRoundId) return { round: null, serverNow: now() };
-      const target = ref(current.latestRoundId),
+      const target = ref(req.data.courseId, current.latestRoundId),
         round = (await target.get()).data() as PollRound;
       if (!round || !round.classIds.includes(p.classId)) return { round: null, serverNow: now() };
       const response = (await target.collection('responses').doc(p.uid).get()).data();
@@ -143,7 +157,7 @@ export function createClassroomHandlers(
     submitClassroomInteraction: onCall(options, async (req) => {
       const { p } = await authorize(req);
       if (p.teacher) throw new HttpsError('permission-denied', '教師不建立學生作答');
-      const target = ref(req.data.roundId),
+      const target = ref(req.data.courseId, req.data.roundId),
         response = target.collection('responses').doc(p.uid);
       return db.runTransaction(async (tx) => {
         const round = (await tx.get(target)).data() as PollRound | undefined;
@@ -176,30 +190,30 @@ export function createClassroomHandlers(
     }),
     classroomInteractionReport: onCall(options, async (req) => {
       const { c } = await authorize(req, true);
-      const current = (await state().get()).data();
+      const current = (await state(req.data.courseId).get()).data();
       const active = current?.openRoundId
-        ? ((await ref(current.openRoundId).get()).data() as PollRound)
+        ? ((await ref(req.data.courseId, current.openRoundId).get()).data() as PollRound)
         : undefined;
       if (active && active.eligibleCount === undefined)
-        active.eligibleCount = await rosterCount(c, active.classIds);
+        active.eligibleCount = await rosterCount(req.data.courseId, c, active.classIds);
       let id =
         req.data.roundId ||
         (req.data.slideId ? current?.latestBySlide?.[req.data.slideId] : current?.latestRoundId);
       // Legacy rounds predate latestBySlide; a single-field query needs no new composite index.
       if (!id && req.data.slideId) {
-        const list = await rounds().where('slideId', '==', req.data.slideId).get();
+        const list = await rounds(req.data.courseId).where('slideId', '==', req.data.slideId).get();
         id = list.docs
           .map((d) => d.data() as PollRound)
           .sort((a, b) => b.openedAt - a.openedAt)[0]?.id;
       }
-      const selected = id ? ((await ref(id).get()).data() as PollRound) : undefined;
+      const selected = id ? ((await ref(req.data.courseId, id).get()).data() as PollRound) : undefined;
       const result: any = {
         round: selected ? visibleRound(selected) : null,
         activeRound: active?.status === 'open' ? visibleRound(active) : null,
         serverNow: now(),
       };
       if (req.data.history === true) {
-        const list = await rounds().orderBy('openedAt', 'desc').limit(100).get();
+        const list = await rounds(req.data.courseId).orderBy('openedAt', 'desc').limit(100).get();
         result.rounds = list.docs.map((d) => {
           const { id, title, slideId, number, status, classIds, total } = d.data();
           return { id, title, slideId, number, status, classIds, total };
@@ -209,7 +223,7 @@ export function createClassroomHandlers(
     }),
     classroomInteractionRecords: onCall(options, async (req) => {
       await authorize(req, true);
-      const target = ref(req.data.roundId);
+      const target = ref(req.data.courseId, req.data.roundId);
       const list = await target.collection('responses').get();
       return { rows: list.docs.map((d) => d.data()) };
     }),

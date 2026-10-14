@@ -1,25 +1,5 @@
 import { Question } from './model';
 export type ExamKind = 'pretest' | 'posttest';
-export const MI_EXAM_IDS = {
-  pretest: [
-    '110-2-r0247',
-    '106-2-r0061',
-    '106-2-r0085',
-    '106-1-r0036',
-    '105-2-r0021',
-    '109-1-r0192',
-    '106-1-r0042',
-  ].map((x) => `micro-${x}`),
-  posttest: [
-    '113-2-r0351',
-    '107-2-r0129',
-    '113-3-r0364',
-    '110-2-r0257',
-    '106-2-r0086',
-    '110-2-r0254',
-    '107-1-r0110',
-  ].map((x) => `micro-${x}`),
-};
 export type ExamQuestion = Pick<Question, 'id' | 'text' | 'options'> & { image?: string };
 export function publicExamQuestion(q: Question): ExamQuestion {
   return {

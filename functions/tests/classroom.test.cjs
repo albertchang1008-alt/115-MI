@@ -1,10 +1,11 @@
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
 const { createClassroomHandlers } = require('../lib/functions/src/classroom.js');
-const { MI_CLASSROOM_COURSE, interactions } = require('../lib/shared/classroom.js');
+const MI_CLASSROOM_COURSE = '115-1-MI-國考精準對焦';
+const { interactions } = require('../../docs/unify-1.9.0/mi-interactions.json');
 function setup() {
   let clock = 100000;
-  const docs = new Map();
+  const docs = new Map([[`courses/${MI_CLASSROOM_COURSE}/classroomConfig/interactions`, { interactions }]]);
   let queue = Promise.resolve();
   const snap = (path) => ({
     data: () => (docs.has(path) ? structuredClone(docs.get(path)) : undefined),
@@ -72,7 +73,8 @@ function setup() {
   const access = async (req, id, teacher) => {
     if (!req.auth) throw Error('unauthenticated');
     if (teacher && (!req.auth.teacher || req.auth.uid !== 'owner')) throw Error('permission');
-    return { p: req.auth, c: { classIds: ['A', 'B'], rosterVersion: 2 } };
+    if (id !== MI_CLASSROOM_COURSE) throw Error('permission');
+    return { p: req.auth, c: { features: { classroomInteraction: true }, classIds: ['A', 'B'], rosterVersion: 2 } };
   };
   const h = createClassroomHandlers(db, access, { region: 'asia-east1' }, () => clock);
   const call = (name, data = {}, auth = { uid: 'owner', teacher: true }) =>
@@ -322,7 +324,7 @@ test('舊場次本頁查詢相容，無有效倒數不能開放且不寫資料',
       durationSeconds: -1,
     }),
   );
-  assert.equal(docs.size, 0);
+  assert.equal(docs.size, 1); // pre-seeded definitions; invalid request adds no records
   const { round } = await call('controlClassroomInteraction', {
     action: 'open',
     slideId: 'c1-predict',

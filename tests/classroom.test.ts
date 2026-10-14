@@ -1,7 +1,8 @@
+import { interactions } from '../scripts/mi-interactions';
+const MI_CLASSROOM_COURSE = '115-1-MI-國考精準對焦';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  interactions,
   validateResponses,
   tally,
   PollRound,

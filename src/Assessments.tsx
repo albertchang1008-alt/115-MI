@@ -138,7 +138,7 @@ export function StudentAssessments({ api, course }: { api: API; course: Course }
   return (
     <section className={active ? 'assessment-overlay' : 'panel'} aria-label="正式前後測">
       <h2>正式前後測</h2>
-      <p>每份 7 題、8 分鐘、一次正式交卷。成績與解析由教師在後測結束後公布。</p>
+      <p>題數依老師設定、限時 8 分鐘、一次正式交卷。成績與解析由教師在後測結束後公布。</p>
       {notice && (
         <p role="status" className="notice">
           {notice}
@@ -377,7 +377,7 @@ export function TeacherAssessments({
     const a = document.createElement('a'),
       url = URL.createObjectURL(new Blob([text], { type: 'text/csv;charset=utf-8' }));
     a.href = url;
-    a.download = '115-MI_前後測配對.csv';
+    a.download = `${course.id}_前後測配對.csv`;
     a.click();
     URL.revokeObjectURL(url);
   }
@@ -392,7 +392,7 @@ export function TeacherAssessments({
     <section className="panel">
       <h2>正式前後測</h2>
       <p>
-        前／後各 7 題，限時 8
+        題數依課程來源，限時 8
         分鐘（從每位學生開始作答起算）。由教師手動按「開放作答」與「結束測驗」，不需設定日期時間。建立即凍結試卷；同步題庫不改已建立的試卷。先結束前測才開後測，所有後測結束後才能公布答案。
       </p>
       <div className="assessment-form">

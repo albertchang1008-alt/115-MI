@@ -1,3 +1,4 @@
+import { featureAccess } from './features';
 import { Firestore } from 'firebase-admin/firestore';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { onSchedule } from 'firebase-functions/v2/scheduler';
@@ -42,8 +43,8 @@ export async function storeAssessmentSources(
   for (const kind of kinds) {
     const ids = c.assessmentSources[kind] as string[];
     const questions = ids.map((id) => all.find((q) => q.id === id));
-    if (questions.some((q) => !q) || ids.length !== 7 || new Set(ids).size !== 7)
-      fail('前後測來源必須各有七題，請核對題目 ID');
+    if (questions.some((q) => !q) || !ids.length || ids.length > 100 || new Set(ids).size !== ids.length)
+      fail('前後測來源必須各有 1–100 題且 ID 不重複，請核對題目 ID');
     const errors = validateQuestions(questions as Question[]);
     if (errors.length) fail(errors.join('；'));
     await db
@@ -62,6 +63,7 @@ export function createAssessmentHandlers(
   access: (req: any, id: string, teacher?: boolean) => Promise<any>,
   options: any,
 ) {
+  access = featureAccess(access, 'assessments');
   const root = (courseId: string) => db.collection(`courses/${courseId}/assessments`);
   const locate = (req: any) => {
     const examId = req.data?.examId;
@@ -164,7 +166,7 @@ export function createAssessmentHandlers(
     const source = (
       await db.doc(`courses/${req.data.courseId}/assessmentSources/${kind}`).get()
     ).data();
-    if (source?.questions?.length !== 7) fail('請先同步完整題庫的前後測來源');
+    if (!source?.questions?.length || source.questions.length > 100) fail('請先同步完整題庫的前後測來源');
     const examId = kind + '-' + randomUUID(),
       at = Date.now(),
       ref = root(req.data.courseId).doc(examId);

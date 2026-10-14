@@ -1,12 +1,11 @@
+import { featureEnabled } from '../shared/features';
 import { useEffect, useState, useRef } from 'react';
 import { API } from './service';
 import { Course } from '../shared/model';
 import {
   Interaction,
-  MI_CLASSROOM_COURSE,
   PollRound,
   Responses,
-  interactions,
   validateResponses,
   interactionSeconds,
   interactionExpired,
@@ -69,7 +68,7 @@ export function StudentInteraction({ api, course }: { api: API; course: Course }
   }, [api, course.id]);
   usePoll(
     async (alive) => {
-      if (course.id !== MI_CLASSROOM_COURSE || api.preview) return;
+      if (!featureEnabled(course, 'classroomInteraction') || api.preview) return;
       try {
         const r = await api.call<StudentState>('getClassroomInteraction', { courseId: course.id });
         if (alive()) {
@@ -87,7 +86,7 @@ export function StudentInteraction({ api, course }: { api: API; course: Course }
     [api, course.id, state.round?.status],
     state.round?.status === 'open' ? 2000 : 5000,
   );
-  if (course.id !== MI_CLASSROOM_COURSE || api.preview) return null;
+  if (!featureEnabled(course, 'classroomInteraction') || api.preview) return null;
   return (
     <section className="panel classroom-student" aria-label="目前課堂互動">
       <div className="classroom-heading">
@@ -328,12 +327,18 @@ export function TeacherInteraction({
   black: boolean;
   privateRecords?: boolean;
 }) {
+  const [interactions, setInteractions] = useState<import('../shared/classroom').Interaction[]>([]);
+  useEffect(() => {
+    let alive = true;
+    if (featureEnabled(course, 'classroomInteraction') && !api.preview) api.call<{ interactions: import('../shared/classroom').Interaction[] }>('getClassroomConfig', { courseId: course.id }).then(r => { if (alive) setInteractions(r.interactions); }).catch(() => {});
+    return () => { alive = false; };
+  }, [api, course.id]);
   const def = interactions.find((d) => d.slideId === slideId);
   const [state, setState] = useState<TeacherState>({ round: null, activeRound: null });
   const [history, setHistory] = useState<PollRound[]>([]),
     [selected, setSelected] = useState('');
   const [classes, setClasses] = useState<string[]>(
-    course.classIds.filter((id) => id === 'N551' || id === 'N552'),
+    course.classIds,
   );
   const [duration, setDuration] = useState(60),
     [show, setShow] = useState(false);
@@ -390,7 +395,7 @@ export function TeacherInteraction({
   }, [api, course.id]);
   usePoll(
     async (alive) => {
-      if (api.preview || course.id !== MI_CLASSROOM_COURSE) return;
+      if (api.preview || !featureEnabled(course, 'classroomInteraction')) return;
       const version = epoch.current;
       try {
         const r = await api.call<TeacherState>('classroomInteractionReport', {
@@ -487,7 +492,7 @@ export function TeacherInteraction({
       setFailure((e as Error).message);
     }
   }
-  if (course.id !== MI_CLASSROOM_COURSE || api.preview) return null;
+  if (!featureEnabled(course, 'classroomInteraction') || api.preview) return null;
   return (
     <div className="teacher-interaction" ref={controls}>
       {!black && (
@@ -677,52 +682,12 @@ export function TeacherInteraction({
   );
 }
 /** Only presentation instructions change; the approved private source asset stays intact. */
-export function interactiveSlideHTML(html: string, slideId: string) {
-  const replacements: Record<string, [string, string][]> = {
-    'c1-spread': [
-      [
-        '在紙上畫出細菌從 A 床走到 B 床的所有可能路徑，再<b>圈出你會攔截的那一步</b>。',
-        '在自己的課序選擇可能的傳播途徑，以及你會優先加強的攔截步驟。',
-      ],
-      ['個人任務｜4 分鐘', '個人任務｜選擇途徑與攔截步驟'],
-    ],
-    'c1-resist': [
-      ['30 秒，寫下一句衛教說明', '個別選擇衛教說明'],
-      [
-        '一人當王先生，一人當護理師：用上面的機制解釋為什麼不能自己停藥，以及醫院可以怎麼減少抗藥菌。',
-        '在自己的課序選擇適當的衛教說明、基因傳遞方式，以及醫院減少抗藥菌的做法。',
-      ],
-    ],
-    'c2-tcell': [
-      [
-        '每人選一張角色卡，用一句話自我介紹：「我是＿＿，在醫院負責＿＿。」',
-        '每人選一張角色卡，再於課序選擇該角色負責的工作。',
-      ],
-      ['負責：＿＿＿＿', '在課序選擇角色的工作'],
-    ],
-    'c2-hiv': [['30 秒，寫下衛教重點', '個別選擇受器與衛教說明']],
-    'c2-first': [['加碼：補體加熱到幾度就失效？', '加碼：在課序選擇補體失效的溫度。']],
-    reflect: [
-      ['原本我以為＿＿＿＿＿＿＿＿，', '選擇今天最需要加強的概念，'],
-      ['現在我知道＿＿＿＿＿＿＿＿。', '再選擇目前的掌握情形。'],
-      ['寫在 [Zuvio 開放題／小卡] 上，一兩句就好。', '在自己的課序「目前課堂互動」選擇後送出。'],
-    ],
-    'c1-sterile': [
-      ['每題舉手：對的舉一隻手，錯的舉兩隻手。', '在自己的課序逐題選擇對或錯，完成後送出。'],
-    ],
-  };
-  for (const [before, after] of replacements[slideId] || []) html = html.split(before).join(after);
-  if (slideId === 'c1-toxin')
-    html = html.replace(
-      /<table\b[\s\S]*?<\/table>/i,
-      '<div style="display:flex;gap:40px;margin-top:60px"><div style="flex:1;border:3px solid #ba4609;border-radius:20px;padding:65px;font-size:54px">A　內毒素</div><div style="flex:1;border:3px solid #ba4609;border-radius:20px;padding:65px;font-size:54px">B　外毒素</div></div>',
-    );
-  return html;
-}
-export function interactiveSlideNotes(notes: string, slideId: string) {
-  if (!interactions.some((d) => d.slideId === slideId)) return notes;
-  return (
-    '本頁操作：學生在自己的課序選擇作答，沒有自由填答、不分組。教師手動開放、結束，查看票數後統整；不計分。\n原教材醫學講解參考（原有書寫／分組操作指示不適用）：\n' +
-    notes
-  );
+export function interactiveSlideHTML(html: string, _slideId: string) { return html; }
+export function interactiveSlideNotes(notes: string, _slideId: string) { return notes; }
+
+export function ClassroomConfigEditor({ api, course, notify }: { api: API; course: Course; notify: (s: string) => void }) {
+  const [text, setText] = useState('[]'), [defs, setDefs] = useState<import('../shared/classroom').Interaction[]>([]), [selected, setSelected] = useState(''), [revision, setRevision] = useState(0);
+  useEffect(() => { let alive = true; api.call<{ interactions: import('../shared/classroom').Interaction[] }>('getClassroomConfig', { courseId: course.id }).then(r => { if (alive) { setDefs(r.interactions); setText(JSON.stringify(r.interactions, null, 2)); setSelected(s => s || r.interactions[0]?.slideId || ''); } }).catch(e => notify(e.message)); return () => { alive = false; }; }, [api, course.id, revision]);
+  const save = async () => { try { const interactions = JSON.parse(text); await api.call('saveClassroomConfig', { courseId: course.id, interactions }); setRevision(r => r + 1); notify('互動題目已保存；已開放輪次保留原題快照'); } catch(e) { notify((e as Error).message); } };
+  return <section className="panel"><h1>課堂互動</h1><p>互動只記參與，不計成績或完成度。題目以 slideId 綁定簡報頁；也可在此直接開放。</p><label className="field">選擇互動題<select value={selected} onChange={e => setSelected(e.target.value)}><option value="">請選擇</option>{defs.map(d => <option key={d.slideId} value={d.slideId}>{d.title}</option>)}</select></label><TeacherInteraction key={revision} api={api} course={course} slideId={selected} black={false} privateRecords /><details><summary>設定互動題目</summary><p>JSON 陣列：每題包含 slideId、title、fields；欄位包含 id、label、kind（choice 或 order）、options。只輸入選項，不填答案。</p><textarea aria-label="互動題目設定 JSON" rows={14} value={text} onChange={e => setText(e.target.value)} /><button onClick={() => void save()}>保存互動題目</button></details></section>;
 }

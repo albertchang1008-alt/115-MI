@@ -1,14 +1,14 @@
+import { interactions } from './mi-interactions';
+const MI_CLASSROOM_COURSE = '115-1-MI-國考精準對焦';
 // Local-only preview fixture. This file is not an application entry or a deployed authentication path.
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import TeachingControl from '../src/TeachingControl';
 import { StudentInteraction } from '../src/ClassroomInteraction';
 import {
-  interactions,
   tally,
   validateResponses,
   visibleRound,
-  MI_CLASSROOM_COURSE,
 } from '../shared/classroom';
 import '../src/style.css';
 const params = new URLSearchParams(location.search),
@@ -17,6 +17,7 @@ const params = new URLSearchParams(location.search),
   classId = params.get('class') || 'N551';
 const key = '115-mi-classroom-local-preview-v3';
 const course = {
+  features: { assessments: true, teachingConsole: true, classroomInteraction: true },
   id: MI_CLASSROOM_COURSE,
   title: '115-MI課堂互動預覽',
   classIds: ['N551', 'N552', 'test'],
@@ -29,6 +30,7 @@ function read() {
 const api = {
   preview: false,
   async call(name: string, d: any = {}) {
+    if (name === 'getClassroomConfig') return { interactions };
     if (name === 'getTeachingDeck') return await fetch('./teacher-deck.json').then((r) => r.json());
     const s = read(),
       round = s.rounds.find((r: any) => r.id === d.roundId) || s.rounds.at(-1);

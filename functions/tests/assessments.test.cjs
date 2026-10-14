@@ -82,7 +82,7 @@ function fixture() {
       return run;
     },
   };
-  data.set('courses/c', { teacherIds: ['t'], draft: { classIds: ['A'] } });
+  data.set('courses/c', { features: { assessments: true }, teacherIds: ['t'], draft: { classIds: ['A'] } });
   data.set('courses/c/assessmentSources/pretest', { questions });
   data.set('courses/c/assessmentSources/posttest', {
     questions: questions.map((q) => ({ ...q, id: 'post' + q.id })),

@@ -1,71 +1,23 @@
-# 專案交接（115-MI 現況）
-目前版本：1.7.1
+# 專案交接（MI 1.9.0 release）
+目前版本：1.9.0
 
-## 給接手的 AI agent
-- 本 worktree=.worktrees/site-115-MI，分支 codex/115-mi-assessments；commit 結尾 [Codex]，完成任何工作更新handoff與DEVELOPMENT_LOG。
-- MI remote=mi（albertchang1008-alt/115-MI）、Firebase=mi-bd885。禁止push origin/AP2或執行AP2 deploy.sh；每條firebase指令必帶--project mi-bd885。
-- 主目錄feature/respiratory-infographics及其他worktree有其他工作，不動。
-
-## 目前狀態（2026-10-13）
-- **本輪最新指示：三項互動改善只做到本機commit，不push／部署，等待Claude獨立驗收。** 報告docs/115-MI_INTERACTION_STATUS.md、規格docs/CODEX_TASK_115-MI_INTERACTION_STATUS_2026-10-13.md、截圖集docs/115-MI_INTERACTION_STATUS_SCREENSHOTS.html。本機新提交以git log -1為準；基底與正式mi/main仍d48aac87。
-- 常駐三態狀態列與目前輪／本頁及歷次分離、12頁綁定控制、頁內跨頁確認；同一transaction關舊開新，預期輪ID防過期確認。倒數預設60、選項0/30/60/90/120/180；伺服器deadlineAt、3秒寬限、教師＋30秒，到零不自動closed，可加時或統整。學生serverNow＋單調時鐘校正、10秒提醒、未送出選項保留、加時恢復，舊輪無deadline不限時。
-- npm run check前端137＋Functions46＝183全過，0失敗／跳過；兩端build／版本／49入口通過。1280／390、1.2字級及全螢幕／黑屏合成資料回歸通過；正式資料／私有簡報／AP2未改，沒有Firebase或Git遠端操作。新增驗收結果請Claude寫docs/115-MI_INTERACTION_STATUS_CLAUDE_REVIEW.md，不沿用舊PASS。
-- **既有版本Claude事後PASS**：docs/115-MI_CLASSROOM_CLAUDE_REVIEW.md涵蓋d48aac8、12頁選項內容及權限交易；4項非阻擋建議與線上驗證限制另列。此PASS不涵蓋本輪狀態／計時改善。
-- 正式MI版本1.7.1／mi/main=d48aac87，Actions38317348554成功。已上線全選項互動、私有38頁授課簡報、影片重整續播與前後測表單種類切換修正；本輪沒有再部署。
-- 真實test學生既有驗收：前測86／後測100、延後公布／順序限制、單選及排序各1票與鎖定保存、完整測驗100與重整紀錄；教師UI測驗控制／CSV55筆8欄、簡報／黑屏／全螢幕／備註／再投通過。主目錄docs/mi-exam-review/STUDENT_ACCEPTANCE.md及TEACHER_ACCEPTANCE.md；test驗收場次收回且稽核保留，原正式前測prepared未公布、N551/N552/test恢復、互動入口空。沒有代操作正式N551/N552成績。
-- 題庫已發布30分類／365題、47YouTube及六選做Chapter，原兩小時教材保留；Sheet380列／379啟用。私有assessmentSources前／後各7題，正式前測待教師開放，原正式後測未建立。名冊N55134／N55220及test會員已可用，本輪不修改或同步。
-- MI工作區與AP2及根目錄呼吸分支完全分開；.env.local、私有簡報JSON不提交或公開。Firebase專案mi-bd885、MI remote=mi，不執行AP2 deploy.sh。
-
-## 固定決策（精簡版；細節見各 docs）
-
-
-**資料與架構**
-1. 學生入口 GitHub Pages，資料 Firebase（各課程獨立專案，asia-east1）；舊題庫系統資料完全隔離。
-2. 成績一律由後端以私有答案表重批，前端分數不採信。完整作答才更新最高分；錯題複習、抽題、綜合練習不更新最高分與完成度。
-3. 題庫改版時錯題依題目 ID 延續；正解文字／選項數／題型改變或刪除的題目重置；教師可勾選全部重新計算；同步時讀舊版題庫比對（僅教師操作）；複習考與部署前的同步不延續。已發布快照不可變、最高分跨版沿用。所有錯題經 effectiveWrong；rm保留n，再錯累加；同日ok，Asia/Taipei隔日答對才移除。
-4. 代碼（課程／單元／班級）由教師自訂，可中文、英數、`-`、`_`，不可空白標點，≤50 字，建立後不改。題目 ID 等仍限英數。
-5. 時間欄位（datetime-local 無時區）一律以台灣 +08:00 解讀（`parseCourseTime`）。
-6. Firestore 不接受 undefined 欄位：要清除的欄位直接省略。
-
-**單元模型（1.4.0，`docs/UNIT_MODEL_1.4.0.md`）**
-7. Sheet「單元」＝`Chapter`：開放、期限、門檻、必做、班級覆寫、活動、看板移動、完成度計數都在此層。Sheet「次單元」＝`Unit`（題目分類）：題庫版本、進度、錯題、完整測驗範圍。
-8. 單元完成＝底下每個已發布題目分類的完整測驗最高分 ≥ 單元門檻，且必做活動完成。題目分類一律必做（沒有選做分類）；「選做／選看」只在單元（`Chapter.required`，可班級覆寫）與活動（`Activity.required` 覆寫，未設定沿用類型推導）兩個層級，不計完成度。1.7.0 閃卡＝翻卡、不寫入任何資料（含 attempted），舊閃卡分數保留。錯題複習＝逐題重做，只出昨天以前待複習，選10／20／30／50／≤50非檔位全部題數；時間範圍已移除，今天剛錯先看閃卡（複習考仍無閃卡）。完成度公式版本 3（`CURRENT_COMPLETION_FORMULA_VERSION`）。
-9. 單元活動進度鍵 `chapter:<單元名>_<activityId>`。綜合練習只含看板「目前」、已發布的分類（含選看／已達標），不含複習考；可按單元／分類勾範圍，預設全選、以courseId＋uid本機存排除ID；閃卡／抽題／錯題複習全部不計分，題庫只在按練習後載所選。
-
-**複習考（1.5.0，`docs/REVIEW_EXAM_1.5.0.md`）**
-10. 複習考＝教師選多個分類組成的獨立 `Unit`（`unit.review`），題目複製成快照題目池；每次依比例隨機抽 N 題（未考過優先），抽滿配額才算完整作答；最高分 ≥ 門檻完成；逾期仍完成但標「逾期完成」（`progress.units[id].passedAt`）。來源更新需教師按「重新組卷」。一般單元不放題目練習活動。
-
-**題庫同步與題目**
-11. 同步只讀與課程代碼同名的分頁；「單元」欄是分組、「次單元」欄是分類；「啟用」欄 FALSE 的列略過；同步只新增／更新，不自動刪除（舊分類以 `staleUnits` 提示教師清理）。分類名稱跟隨 Sheet 次單元。
-12. 選項每次洗牌；測驗選項不顯示 A/B/C/D。完整測驗作答中不揭曉正解，交卷後才看；翻卡翻面顯示，抽題／錯題複習送出單題後顯示。
-13. 解析五段鍵 `keyword/chain/decide/memory/trace`（保留舊鍵相容）；畫面稱「引導式解析」，一律展開；學生看①～④，教師另看⑤。傳統解析預設收合。
-
-**前端**
-14. 所有 `font-size` 寫成 `calc(Npx * var(--font-scale, 1))`；色系／字級選單在頂端 `.prefs-bar`。
-15. 登入固定 `prompt: 'select_account'`；「切換帳號」沿用 `doSwitchAccount()`。
-16. 教材卡：一般閱讀 HTML 標「閱讀教材」，只有 `tracking === 'interactive'` 標「互動資訊圖表」。
-**互動教材與研究資料**
-17. 教材以公開 SDK `materials/course-learning.js` 回報探索、節點停留、每次作答、通關；不傳姓名／學號／信箱。發布路徑 `public/materials/<slug>-vN/index.html`，登錄於 `shared/materials.ts`，內容重大變更開新版本不覆寫。教師後台填節點／題目分母（寫入時快照，事後不回溯）。
-18. 教材格式：六個固定節點＋教學圖；卡片內「圖→概念→重點→臨床」；第一關 6 題先備逐題解鎖、第二關 5 題病例全對通關（答錯只給提示並要求回讀）。節點／題目 ID 固定英數。NotebookLM 只產初稿，不含追蹤；流程見 `docs/NOTEBOOKLM_HTML_WORKFLOW.md`。
-19. 教材工作室（`教材工作室.app`／`npm run materials:studio`）只做本機匯入與稽核，不跑 git、不部署；規則與 `scripts/materials.mjs` 共用。
-20. 診斷與研究資料只作教學線索：不得判定「猜題／認真」，Mastery 不是正式成績；GA4 只送去識別事件。研究設計見 Project 文件「教學實踐研究設計與平台資料蒐集評估」。
-21. 測試學生帳號用 `config/testStudents` 白名單，只放寬信箱網域，放專屬測試班。
-22. 教材建置流程：agent 先用 `npm run materials:preview <slug>`（只產生教材檔、不登錄教材目錄）＋`npm run materials:shots <slug>`，**停下來請教師看畫面**；教師滿意後才執行 `npm run materials:build <slug>` 完成登錄並 commit。不要直接改 `public/materials/` 的 HTML，也不要用教材工作室重複匯入元件庫建置的教材。 **教師決定（2026-10-11更正）：每份新資訊圖表定稿後，必須把6先備＋5情境題寫入該課程自己的題庫；`html/資訊圖表題庫_上傳用.xlsx`僅屬115-2-AP2，115-MI題庫另存教學知識庫，不納入平台repo**（欄位同既有列：題目 ID 與教材一致、單選四選一、正確答案代碼與 Zuvio 序號、解析＋①～④引導式解析、講義標題與教材連結；選項打散；「說明」分頁更新次單元來源與合計題數），未寫入題庫不算完成。**只能在最後增列新列，既有列一律不得修改、刪除或重新排序（已上傳平台、學生已在作答；改動會讓該分類產生新題庫版本）。**
-23. **用語（教師決定 2026-10-03）：一律使用台灣課本用語，不用大陸用語**（例：心搏量非每搏量、紅血球非紅細胞、微血管非毛細血管、受器非感受器、黏度非粘度、點選非點擊）。新教材與修改都要掃描用語；學生看得到的地方不得留下「⚠️」「請教師決定」等草稿註記。
-24. **藥物與疾病（教師決定 2026-10-07）：Q1–Q8 任何題目內容和藥物或疾病有關，一律納入「國考延伸」補充教材**（9/25「正式教材不放疾病藥物」的配套）；出處第一順位指定課本、第二順位其他課本並逐句註明。規格見 Project 文件「期中考國考延伸補充教材規格」第 5 節。
-25. **課程題庫分離（教師2026-10-11更正）**：115-MI 與 115-2-AP2 共用主程式，課程內容與題庫完全分開；任何課程的題目只寫入該課程自己的題庫檔，不得寫入 html/資訊圖表題庫_上傳用.xlsx（該檔僅屬 115-2-AP2）。
-
-26. **115-MI 獨立部署**：網站 `albertchang1008-alt/115-MI`、Firebase `mi-bd885`；115-2-AP2 維持 `115-1-AP2`／`ap2-7ed91`。兩邊共用程式碼，但部署、資料、教材、題庫各自分開；部署前必確認目標專案與 remote。
-
-27. **正式前後測（教師2026-10-12指示）**：屬測驗，不使用一般練習模式；專用測驗流程規畫為前／後各7題、一次正式交卷、後端限時／私有試卷、延後公布答案、獨立成績；規格docs/115-MI_EXAM_MODE_PLAN.md，已實作於115-MI；8分鐘為本次採用預設；教師手動開放／結束，不設定日期時間。
-
-
-28. **115-MI個別活動（教師2026-10-12）**：不分組、不安排鄰座討論；講義、投影片備註及海報採個人探索／作答，教師全班統整。
-
-29. **即時課堂互動（教師2026-10-12核可方案）**：在學生自己的課序作答；全部12互動頁、不分組／不計分／不限時，教師手動開關；每人每輪送出後鎖定。投影即時顯示各選項票數與百分比，學生不得自由填答，手機開放期間僅看本人答案，結束才看結果；與正式前後測、一般進度及題庫完全分開。新功能先交本機預覽，教師核可後才發布。
+## 現況（2026-10-14）
+- worktree .worktrees/release-mi-1.9.0；分支 release/mi-1.9.0。
+- 基底mi/main70354e0（含d48aac8），合併共用7a6720e（含CI fixtures修正）；本機merge commit以git log -1查閱。
+- 24衝突已核對無標記並解決；d48aac8兩項修正與原fixtures保留。
+- workflow缺VITE_SITE_ID時fallback mi；MI GitHub variable未設，唯讀列教師發布前待辦，本輪不改遠端。
+- .firebaserc依教師指示不改；所有後續MI Firebase指令必明確--project mi-bd885，不使用AP2 deploy.sh。
+- 29個未追蹤AP2公開教材資料夾已移到repo外_mi-merge-aside，沒有提交；指定四檔回到已暫存版本。MI public/materials只有兩份微免教材。
+- 分站教材登錄測試兩站都有斷言、不skip；同檔回補unify commit178f862，共用AP2 check158／54全過，AP2不重新部署。
+- 純暫存checkout-index匯出＋npm ci跑MI完整check150／Functions54、0 fail／0 skipped；版本／build／51入口通過。
+- 乾淨匯出dist只有兩份MI教材＋三CHP，site.json為mi；不依賴未追蹤檔。
+- 重跑離線dry-run成功：mi-bd885、12題與slideTransforms一致；未連線正式Firebase。
+- Excel引用Claude已完成稽核：暫存結果相對mi/main沒有任何.xlsx變動；不修先前工具，不改Excel。
+- 報告docs/MI_1.9.0_RELEASE_PREPARATION.md；check與verification／dry-run證據在docs/unify-1.9.0/。
+- 未push mi／apply／部署MI／讀寫正式學生資料或成績。AP2正式main7a6720e不變。
 
 ## 下一步
-- Claude獨立驗收本輪三項互動改善，報告115-MI_INTERACTION_STATUS_CLAUDE_REVIEW.md；需修交回Codex，PASS後仍等教師另行授權發布MI後端與前端。不要因先前「先上線」授權自行發布本輪。
-- 真實跨裝置／54人雲端承載、外接投影與正式課堂倒數另待授權實測；本輪只用本機合成資料，不當成正式承載驗收。
-- 既有正式前後測仍由教師手動建立／開放／結束／公布，各7題8分鐘；換投影片不改測驗或單元開放。
-- 其餘46支影片、真實手機與HTML完整通關未完整驗證。單螢幕查看備註／成績／私人紀錄前先暫停投影；全螢幕隱藏備註與身分資料。
+1. 停在本機merge commit，交Claude複驗合併、來源隔離、分站測試與migration計畫。
+2. 教師發布前確認／設定MI GitHub VITE_SITE_ID=mi；本輪不修改。
+3. Claude通過且教師另行授權後migration→MI Functions→Pages；本輪仍全部禁止。
+4. 更新handoff／DEVELOPMENT_LOG；commit結尾[Codex]，不force push／no-verify／skip。

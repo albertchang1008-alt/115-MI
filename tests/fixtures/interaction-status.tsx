@@ -1,15 +1,16 @@
+import { interactions } from '../../scripts/mi-interactions';
+const MI_CLASSROOM_COURSE = '115-1-MI-國考精準對焦';
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import TeachingControl from '../../src/TeachingControl';
 import { StudentInteraction } from '../../src/ClassroomInteraction';
 import {
-  interactions,
-  MI_CLASSROOM_COURSE,
   PollRound,
   tally,
   validateResponses,
 } from '../../shared/classroom';
 const course = {
+  features: { assessments: true, teachingConsole: true, classroomInteraction: true },
   id: MI_CLASSROOM_COURSE,
   title: '互動狀態驗收',
   classIds: ['N551', 'N552'],
@@ -36,6 +37,7 @@ const api = {
     const round =
       rounds.find((r) => r.id === d.roundId) ||
       [...rounds].reverse().find((r) => !d.slideId || r.slideId === d.slideId);
+    if (name === 'getClassroomConfig') return { interactions };
     if (name === 'getTeachingDeck') return { title: '本機合成簡報 · 無私有資料', slides };
     if (name === 'classroomInteractionReport')
       return {

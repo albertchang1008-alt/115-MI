@@ -5,6 +5,7 @@ import {
 } from './ClassroomInteraction';
 import { ReactNode, useEffect, useRef, useState } from 'react';
 import { API } from './service';
+import { featureEnabled } from '../shared/features';
 import { Course } from '../shared/model';
 import { TeacherAssessments } from './Assessments';
 import ProgressBoard from './ProgressBoard';
@@ -51,7 +52,8 @@ export default function TeachingControl({
     setFailure('');
     try {
       const d = await api.call<Deck>('getTeachingDeck', { courseId: course.id });
-      setDeck(d);
+      setDeck(d.slides.length ? d : null);
+      if (!d.slides.length) setPanel('flow');
     } catch (e) {
       setFailure((e as Error).message);
     } finally {
@@ -114,21 +116,21 @@ export default function TeachingControl({
     <div className="teaching-control">
       <header className="pageheading">
         <div>
-          <span className="eyebrow">115-MI</span>
+          <span className="eyebrow">{course.title}</span>
           <h1>授課控制台</h1>
           <p>播放簡報、控制學習單元、開放前後測，都在這裡操作。</p>
         </div>
       </header>
       <div className="toolbar" role="group" aria-label="授課控制">
-        <button className={panel === 'slides' ? 'primary' : ''} onClick={() => setPanel('slides')}>
+        {deck && <button className={panel === 'slides' ? 'primary' : ''} onClick={() => setPanel('slides')}>
           簡報播放
-        </button>
+        </button>}
         <button className={panel === 'flow' ? 'primary' : ''} onClick={() => setPanel('flow')}>
           學生學習進度
         </button>
-        <button className={panel === 'exams' ? 'primary' : ''} onClick={() => setPanel('exams')}>
+        {featureEnabled(course, 'assessments') && <button className={panel === 'exams' ? 'primary' : ''} onClick={() => setPanel('exams')}>
           前測／後測
-        </button>
+        </button>}
         <button
           className={panel === 'completion' ? 'primary' : ''}
           onClick={() => setPanel('completion')}
@@ -144,7 +146,7 @@ export default function TeachingControl({
             回控制台。方向鍵／PageUp／PageDown換頁，B鍵暫時黑屏。換頁不會改變學生進度或開考。
           </p>
           {api.preview ? (
-            <p>簡報需教師登入115-MI正式網站才能讀取。</p>
+            <p>簡報需授權教師登入本站才能讀取。</p>
           ) : failure ? (
             <p role="alert">
               {failure} <button onClick={() => void load()}>重試讀取簡報</button>

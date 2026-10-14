@@ -1,6 +1,7 @@
+const MI_TEACHING_COURSE = '115-1-MI-國考精準對焦';
 const { test } = require('node:test');
 const assert = require('node:assert/strict');
-const { createTeachingHandlers, MI_TEACHING_COURSE } = require('../lib/functions/src/teaching.js');
+const { createTeachingHandlers } = require('../lib/functions/src/teaching.js');
 const source = {
   id: MI_TEACHING_COURSE,
   classIds: ['A', 'B'],
@@ -17,10 +18,11 @@ function handlers() {
   return createTeachingHandlers(
     { doc: () => ({get: async () => ({data: () => ({title: '測試簡報', slides: Array.from({length: 38}, (_, i) => ({id: i === 0 ? 'cover' : 'slide'+i, title: '頁'+i, html: '<section>測試</section>', notes: '教師備註', answerPage: i === 10}))})})}) },
     async (req, id, teacher) => {
+      if (id !== MI_TEACHING_COURSE) throw Error('permission');
       if (!req.auth) throw Error('請先登入');
       if (teacher && !req.auth.teacher) throw Error('需要教師權限');
       if (req.auth.teacher && req.auth.uid !== 'owner') throw Error('未獲授權');
-      return { p: req.auth, c: { published: source } };
+      return { p: req.auth, c: { features: { teachingConsole: true }, published: source } };
     },
     { region: 'asia-east1' },
   );

@@ -3,6 +3,25 @@
 - npm run check前端137＋Functions46＝183全過0跳過，兩端build／版本／49入口成功。新增後端四項、時間顯示與React回歸，1280／390及1.2／全螢幕／黑屏截圖集；全部本機合成資料，無私有簡報或真實名冊。
 - 停在本機commit，codex/115-mi-assessments／基底d48aac87，不push／部署，等Claude新驗收。正式測驗／題庫／名冊／成績／AP2不動；報告docs/115-MI_INTERACTION_STATUS.md，handoff淘汰過期83題／待舊Claude等現況。
 
+## 1.9.0 MI分站回歸與乾淨匯出驗證（2026-10-14，Codex；本機待Claude複驗）
+- 依教師新指示將未追蹤AP2公開教材移出repo、還原指定4檔；不提交AP2教材。
+- 教材登錄測試分站：AP2維持五份physiology斷言，MI核對兩教材HTML／來源／ID／目錄及AP2公開檔不存在，無skip。
+- Excel採用Claude已完成稽核：暫存相對mi/main沒有.xlsx變動；不修稽核工具。
+- 純暫存checkout-index匯出MI完整check150／54、0 fail／skipped，dist2教材＋3CHP、離線dry-run成功；共用AP2 check158／54全過，分站測試回補178f862。本機merge，未push／部署AP2或MI。
+
+## 1.9.0 MI check通過、補充稽核工具失敗停止（2026-10-14，Codex）
+- 24衝突無標記、授權Git metadata暫存成功；workflow fallback mi，.firebaserc依教師指示不改；MI變數未設唯讀列待辦。
+- 保留d48aac8全部新增行與2份原fixture；補42快照／還原3完整共用測試，不skip。MI dist僅2教材＋3 CHP。
+- 完整MI check158／Functions54、0 fail／skipped、版本／build／51入口通過；離線dry-run mi-bd885成功12題＋簡報轉換。
+- 補充Excel逐位元稽核未處理Git中文路徑轉義、FileNotFoundError，依任一步失敗停下。尚未最終暫存／合併commit；不是測試失敗，無需追加Git授權。
+- 報告docs/MI_1.9.0_RELEASE_PREPARATION.md；未push／apply／部署MI／改Excel或正式學生資料。
+
+## 1.9.0 MI release合併暫存失敗（2026-10-13，Codex）
+- 自mi/main70354e0（含d48aac8）開release/mi-1.9.0，合併unify7a6720e（含CI fixtures修正）。
+- 24衝突內容已寫入unify版本，但git add因default sandbox index.lock不可寫而失敗；依任何一步失敗停下，index仍unmerged／MERGE_HEAD保留。
+- MI專屬設定、非衝突來源快照檢查、check／dry-run／commit尚未完成，不可部署。詳細逐檔紀錄docs/MI_1.9.0_MERGE_PENDING.md。
+- AP2已成功發布驗證；本輪未push mi／apply／部署MI／修改Excel或正式學生資料。
+
 ## 2026-10-13 Claude：115-MI課堂互動／前後測／授課控制台事後獨立驗收 PASS
 - 檢視8753865..d48aac8共24程式檔與12頁選項；醫學內容全正確，權限、單人單票交易、私有答案與公布順序審查通過。
 - 獨立重跑：前端135（環境封鎖Google Fonts致5項瀏覽器測試失敗，去@import後135全過）、Functions42、build／49入口通過。
@@ -32,6 +51,36 @@
 - 根目錄feature/respiratory-infographics=e8805f8，MI codex/115-mi-assessments=75801d1，未commit／push／部署；新修正發布需教師明確授權。
 
 # 開發紀錄
+目前版本：1.9.0
+
+## 1.9.0 規則／索引成功，Actions失敗停止（2026-10-13，Codex）
+- 教師明確授權AP2規則／索引，CLI限定ap2-7ed91、non-interactive部署成功；未加force、無刪除提示、未刪索引。
+- 查40d3ec4的Actions38422029549：build的check前端155／157通過、2 fail、0 skipped；兩項site.test依賴MI70354e0，本機有該歷史但CI depth1沒有。Pages deploy跳過。
+- 依任何一步失敗停下，沒有修測試／重跑Actions／回退。READY與排程log、線上雜湊／測試班驗證尚未完成，B段未開始。
+- 更新docs/DEPLOY_1.9.0_REPORT.md與Actions失敗摘要；未改Excel／學生資料／push mi／apply／部署MI。
+
+## 1.9.0 AP2 部署中止（2026-10-13，Codex）
+- 教師授權部署，AP2不加MI22題、Excel不動；Claude複驗記錄提交40d3ec4，fetch兩遠端及origin祖先檢查通過。
+- AP2變數未設VITE_SITE_ID，workflow預設ap2；deploy.sh完整check157／54、0 fail／skipped通過，ap2-7ed91 Functions成功，普通push備份分支與origin/main至40d3ec4。
+- Firestore規則／索引部署被自動審查拒絕（獨立安全邊界變更授權／影響未核實），指令未執行；依任一步失敗停下，未繞過／回退。Actions、線上雜湊、測試班開關／guide驗證未完成。
+- B段未開始；實際mi/main=70354e0，與交辦d48aac8不同，後續需核對。未push mi／apply／部署MI／修改Excel或學生資料。
+- 停止點与待辦見docs/DEPLOY_1.9.0_REPORT.md；root教材工作保留。
+
+## 1.9.0 驗收修正（2026-10-13，Codex；本機待 Claude 複驗）
+- 依 Claude 對78cb5dc的驗收修 M-1：presentationSnap 不遮蔽簡報轉換 JSON；假 Firestore 跑 CLI apply，交易設定精確一致、不含 snapshot 欄位，全程封鎖網路與真實 SDK／憑證。
+- m-1 前／後測任一來源空白時保存成功後提醒，不阻擋；m-2 標題明示保存草稿即對學生生效、不需發布。
+- m-4 重拍18張測試班截圖，提示標籤移至48px白底外側；桌機／手機來源提醒與標籤不相交驗證通過。
+- AP2／MI 完整 check：前端157／Functions54、0 fail／0 skipped；兩站 guide 驗證通過，圖片585690 bytes、最小12.25px、無溢位／外部請求。
+- 更新報告與交接；未改 Excel、未 push／部署／執行正式 migration／接觸正式 Firebase。待 Claude 複驗 M-1，m-3 留教師決定。
+
+## 1.9.0（2026-10-13，Codex；本機待 Claude 驗收）
+- 從 origin/main@a593796 建 feature/1.9.0-unify／.worktrees/unify-1.9.0，逐檔移植題庫分離、1.8.0 反思與指定 MI 功能 commit；沒有 merge MI 網站分支。
+- 功能改為課程 features（預設關閉）、後端 access＋features 驗證、課程來源題目設定與私有簡報、資料驅動互動，保留舊輪次／試卷紀錄路徑。
+- 修反思換行與換信箱未作答判斷；影片等待雲端進度、補考種類切換、倒數／加時一併移植。
+- VITE_SITE_ID 分開 AP2／MI 目錄、網址及 CHP 建置；AP2 原快照全部保留。MI 簡報選項指示改為課程 migration 資料，顯示與舊版逐頁一致。
+- 共用靜態學生說明、登入／首頁入口與本機三張提示；18 張測試班指示截圖、兩站桌機／手機建置截圖；無正式學生資料。
+- AP2／MI 各跑完整 check，前端156／Functions54、0 fail／0 skipped，版本／build／51入口通過；guide 最小12.25px、無溢位／外部請求、色系字級／列印有效；圖片584447 bytes。
+- migration 只產離線 dry-run，12題逐字一致；未 apply、push 或部署。報告 docs/UNIFY_1.9.0_REPORT.md，待 Claude 獨立驗收。
 
 ## 2026-10-13｜教師授權全選項課堂互動先發布 [Codex]
 - 教師最新指示「先上線」，取代等待Claude PASS的發布順序；Claude獨立驗收仍待進行，不宣稱已通過。僅MI五個新API及MI網站，不動AP2、既有正式場次、名冊、Sheets或Excel。
@@ -133,7 +182,7 @@
 - 圖例分項加間距；最高分／門檻與作答次數加分隔。
 - check140／26、兩端build、版本檢查及兩尺寸截圖通過，待Claude複驗，未push／部署。
 
-目前版本：1.7.1
+
 
 ## 1.7.1 — 2026-10-07 完成度看板：各班比較＋學生單元矩陣 [Codex]
 - 從e8805f8獨立建立feature/1.7.1-completion-board（.worktrees/completion-board），純前端；逐班讀完getCompletion分頁、頁面快取、各班／總人數加權完成率、姓名固定矩陣、逾期／未開放／進行中格子、明細抽屜、搜尋排序篩選及兩種CSV，保留StudentDetail。

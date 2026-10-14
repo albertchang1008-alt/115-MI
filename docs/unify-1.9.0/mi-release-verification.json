@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-14",
+  "verification": "git checkout-index pure staged export, clean npm ci",
+  "exportDirectory": "/private/tmp/mi-index-ci-1.9.0.WANE0X",
+  "tests": {
+    "frontend": 150,
+    "functions": 54,
+    "failed": 0,
+    "skipped": 0
+  },
+  "materials": [
+    "immuno-concepts-review-v1",
+    "micro-bacteria-review-v1"
+  ],
+  "CHP": [
+    "CHP07_immune_infographic.html",
+    "CHP08_hypersensitivity_infographic.html",
+    "CHP16_mycology_infographic.html"
+  ],
+  "publicSourceOnlyMI": true,
+  "movedAP2": {
+    "directory": "/Users/HHC/Documents/ChatGPT/_mi-merge-aside/release-mi-1.9.0-20261014-ayyc2fqa",
+    "folders": [
+      "blood-composition-v1",
+      "blood-gas-transport-v1",
+      "blood-gas-transport-v2",
+      "blood-post-v1",
+      "blood-pre-v1",
+      "blood-pressure-measurement-v1",
+      "blood-pressure-regulation-v1",
+      "blood-types-v1",
+      "blood-vessels-v1",
+      "capillary-exchange-v1",
+      "cardiac-conduction-v1",
+      "cardiac-conduction-v2",
+      "cardiac-cycle-v1",
+      "cardiac-cycle-v2",
+      "cardiac-electrical-v1",
+      "cardiac-output-v1",
+      "circulation-routes-v1",
+      "coronary-circulation-v1",
+      "course-orientation-v1",
+      "ecg-basics-v1",
+      "heart-structure-v1",
+      "heart-structure-v2",
+      "hemodynamics-v1",
+      "hemostasis-mechanisms-v1",
+      "hemostasis-mechanisms-v2",
+      "lymphatic-system-v1",
+      "lymphoid-organs-v1",
+      "major-vessels-v1",
+      "rbc-homeostasis-v1"
+    ]
+  },
+  "restoredToIndex": [
+    "tests/ecg-model.test.ts",
+    "tests/material-kit.test.ts",
+    "tests/material.test.ts",
+    "public/materials/README.md"
+  ],
+  "excelAudit": "Claude已完成：暫存結果相對mi/main沒有任何.xlsx變動；本輪引用結論，未重新稽核或修改Excel",
+  "githubVariable": {
+    "VITE_SITE_ID": "unset",
+    "changed": false
+  },
+  "workflowDefault": "mi",
+  "firebaserc": "unchanged; MI Firebase commands must explicitly use --project mi-bd885",
+  "migration": "offline dry-run only, 12 interactions and slideTransforms",
+  "sharedTestBackport": "178f862"
+}

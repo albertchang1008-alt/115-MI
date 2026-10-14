@@ -1917,6 +1917,38 @@ body { padding-bottom: 60px; }
 
 .completion-legend { display: flex; flex-wrap: wrap; gap: 0.5em 1.2em; }
 
+/* Reflection activities: keep long answers within cards; only the report table scrolls. */
+.reflection-page { max-width: 860px; margin: 0 auto; padding: 24px; }
+.reflection-page h1 { font-size: calc(28px * var(--font-scale, 1)); }
+.reflection-page fieldset, .reflection-editor fieldset { min-width: 0; margin: 20px 0; padding: 18px; border: 1px solid var(--line, #dce4ed); border-radius: 14px; }
+.reflection-page legend, .reflection-editor legend { max-width: 100%; overflow-wrap: anywhere; font-size: calc(17px * var(--font-scale, 1)); font-weight: 700; }
+.reflection-page textarea { width: 100%; resize: vertical; font-size: calc(16px * var(--font-scale, 1)); }
+.reflection-page small, .reflection-editor small { font-size: calc(13px * var(--font-scale, 1)); }
+.reflection-editor { min-width: 0; }
+.reflection-editor label { display: block; margin: 12px 0; }
+.reflection-editor code { overflow-wrap: anywhere; }
+.reflection-editor textarea, .reflection-editor input:not([type=checkbox]), .reflection-editor select { width: 100%; }
+.reflection-choices { display: grid; gap: 10px; }
+.reflection-choices button { text-align: left; min-height: 48px; white-space: normal; overflow-wrap: anywhere; font-size: calc(16px * var(--font-scale, 1)); }
+.reflection-choices .selected { border: 2px solid var(--primary, #326b9b); background: var(--soft, #e9f2fa); }
+.reflection-answer { white-space: pre-wrap; overflow-wrap: anywhere; max-width: 420px; font-size: calc(15px * var(--font-scale, 1)); }
+.reflection-results { min-width: 0; }
+.reflection-results .tablewrap { max-width: 100%; overflow-x: auto; }
+.reflection-results th { min-width: 110px; max-width: 250px; white-space: normal; }
+.reflection-results td.reflection-answer { min-width: 230px; }
+.reflection-filters { display: flex; gap: 12px; align-items: end; flex-wrap: wrap; }
+.reflection-filters label { flex: 1 1 160px; min-width: 0; }
+.reflection-filters select { width: 100%; }
+.reflection-summary { font-size: calc(20px * var(--font-scale, 1)); font-weight: 700; }
+.reflection-bars { margin: 20px 0; }
+.reflection-bars > div { display: grid; grid-template-columns: minmax(0, 2fr) minmax(60px, 1fr) 45px; gap: 8px; align-items: center; margin: 12px 0; overflow-wrap: anywhere; }
+.reflection-bars meter { width: 100%; }
+@media (max-width: 520px) {
+  .reflection-page { padding: 16px; }
+  .reflection-page fieldset, .reflection-editor fieldset { padding: 12px; }
+  .reflection-page .sectionhead { align-items: start; flex-wrap: wrap; }
+  .reflection-results .actions button, .reflection-editor .actions button { white-space: normal; }
+}
 .assessment-overlay{position:fixed;inset:0;z-index:500;background:var(--bg,#f8fafc);overflow:auto;padding:24px max(16px,calc((100vw - 1000px)/2));color:var(--text,#172033)}
 .assessment-card{border:1px solid var(--line,#cbd5e1);border-radius:12px;padding:16px;margin:12px 0}.assessment-card button{margin:4px}
 .assessment-question{margin:20px 0;padding:16px;border:1px solid var(--line,#cbd5e1);border-radius:12px}.assessment-question legend{font-size:calc(18px * var(--font-scale,1));line-height:1.7;padding:0 8px}.assessment-question label{display:flex;gap:12px;align-items:flex-start;padding:12px;border-radius:8px;cursor:pointer}.assessment-question input{margin-top:6px;flex-shrink:0}
@@ -1955,3 +1987,8 @@ body { padding-bottom: 60px; }
 @media(max-width:600px){.classroom-statusbar{font-size:calc(13px * var(--font-scale,1))}.interaction-confirm{padding:12px}.interaction-confirm button{width:100%;margin:4px 0}.teacher-interaction .interaction-control label select{width:auto}}
 
 .classroom-statusbar{width:fit-content;max-width:calc(100% - 16px);margin:8px 8px 0 auto;border-radius:8px}
+
+.reflection-answer { white-space: pre-wrap; }
+
+.student-guide-prefs { position: static; flex-wrap: wrap; margin-bottom: 18px; }
+.first-use-tips { border: 2px solid var(--blue); margin-bottom: 18px; }
